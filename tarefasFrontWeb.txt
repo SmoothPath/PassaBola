@@ -1,0 +1,11 @@
+Front end e Web dev
+• HTML semântico, 
+• TailwindCSS, 
+• Layout dinâmico e moderno,
+• Responsividade para desktop, tablet e mobile
+• Sistema de login simples para controle de acesso
+• Navegação entre diferentes páginas da aplicação
+• Integração com serviços externos para obtenção de dados (APIs)
+• Gestão de exceções e falhas durante a execução
+
+**No final, devem ser realizados testes de camadas críticas do sistema, descrever detalhadamente os pontos de acesso da API e gerar dados de teste (usuário padrão) para testar nosso sistema
