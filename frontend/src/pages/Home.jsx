@@ -2,6 +2,7 @@ import React from "react";
 import Navbar from "../components/Navbar";
 import StatsCard from "../components/StatsCard";
 import videoBg from "../assets/passa.mp4";
+import Login from "../components/Login";
 
 export default function Home() {
   return (
@@ -26,6 +27,9 @@ export default function Home() {
           <StatsCard value="124" label="Participantes ativos" color="3F1859" />
           <StatsCard value="86" label="Presenças registradas" color="CB5B85" />
           <StatsCard value="23" label="Ausências registradas" color="588C23" />
+        </section>
+        <section>
+          <Login/>
         </section>
       </main>
     </div>
