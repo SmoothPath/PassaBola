@@ -154,3 +154,16 @@ router.put('/profile', authenticateToken, (req, res) => {
 
 
 module.exports = { router, authenticateToken, users };
+
+
+(async () => {
+  const hashedPassword = await bcrypt.hash("admin123", 10);
+  const adminUser = {
+    id: 99,
+    name: "Administrador",
+    email: "admin@passabola.app",
+    password: hashedPassword,
+    role: "admin"
+  };
+  users.push(adminUser);
+})();

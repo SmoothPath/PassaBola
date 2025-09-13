@@ -1,17 +1,21 @@
-// server.js
+// backend/server.js
 const express = require('express');
-const cors = require('cors'); // Se precisar de CORS
+const cors = require('cors');
+
+// importa os routers
 const { router: authRoutes } = require('./routes/auth');
+const { router: eventosRoutes } = require('./routes/eventos');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Middlewares
 app.use(express.json());
-app.use(cors()); // Habilita CORS para todas as origens
+app.use(cors());
 
 // Rotas
 app.use('/api/auth', authRoutes);
+app.use('/api/eventos', eventosRoutes); // ⬅️ agora plugado corretamente
 
 // Rota padrão
 app.get('/', (req, res) => {
@@ -22,4 +26,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
