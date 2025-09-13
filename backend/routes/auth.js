@@ -133,4 +133,24 @@ router.get('/profile', authenticateToken, (req, res) => {
   });
 });
 
+// Rota para atualizar perfil do usuário (protegida)
+router.put('/profile', authenticateToken, (req, res) => {
+  const user = users.find(u => u.id === req.user.id);
+  if (!user) return res.status(404).json({ error: 'Usuário não encontrado' });
+
+  const { points, position, location, age, eventsParticipated, experience } = req.body;
+
+  if (points !== undefined) user.points = points;
+  if (position) user.position = position;
+  if (location) user.location = location;
+  if (age) user.age = age;
+  if (eventsParticipated) user.eventsParticipated = eventsParticipated;
+  if (experience) user.experience = experience;
+
+// Atualiza os campos recebidos no corpo da requisição
+  res.json({ message: 'Perfil atualizado com sucesso', user });
+});
+
+
+
 module.exports = { router, authenticateToken, users };

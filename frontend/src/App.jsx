@@ -1,16 +1,19 @@
 import React from "react";
-import Home from "./pages/Home"; // caminho relativo para Home.jsx
-import { AuthProvider } from "./components/contexts/AuthContext"; // importa o AuthProvider
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Perfil from "./pages/Perfil";
+import { AuthProvider } from "./components/contexts/AuthContext";
 
 function App() {
   return (
-    <React.StrictMode>
-      <AuthProvider>
-        <div className="App">
-          <Home />
-        </div>
-      </AuthProvider>
-    </React.StrictMode>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/perfil" element={<Perfil />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

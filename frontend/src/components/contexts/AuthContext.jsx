@@ -31,7 +31,8 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setUser(user);
 
-      return user;
+      // Retorna user e token
+      return { user, token };
     } catch (error) {
       console.error('Erro no login:', error);
       throw error;
@@ -49,11 +50,17 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setUser(user);
 
-      return user;
+      // Retorna user e token
+      return { user, token };
     } catch (error) {
       console.error('Erro no registro:', error);
       throw error;
     }
+  };
+
+  const updateUser = (updatedUser) => {
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    setUser(updatedUser);
   };
 
   const logout = () => {
@@ -64,7 +71,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
       {!loading && children}
     </AuthContext.Provider>
   );
