@@ -1,7 +1,6 @@
 // frontend/src/pages/EventoNovo.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "../components/Navbar";
 import { createEvento } from "../services/eventos";
 
 export default function EventoNovo() {
@@ -43,7 +42,6 @@ export default function EventoNovo() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <main className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">Criar evento</h1>
         <form onSubmit={onSubmit} className="bg-white rounded-2xl shadow p-5 space-y-4">

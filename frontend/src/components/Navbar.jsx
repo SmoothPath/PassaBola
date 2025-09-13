@@ -26,7 +26,6 @@ export default function NavBar() {
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-gray-300 focus:outline-none"
             >
-              {/* Ícone hambúrguer */}
               <svg
                 className="h-6 w-6"
                 xmlns="http://www.w3.org/2000/svg"
@@ -35,7 +34,6 @@ export default function NavBar() {
                 stroke="currentColor"
               >
                 {isOpen ? (
-                  // X (fechar)
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -43,7 +41,6 @@ export default function NavBar() {
                     d="M6 18L18 6M6 6l12 12"
                   />
                 ) : (
-                  // Três barras (abrir)
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
@@ -57,12 +54,13 @@ export default function NavBar() {
 
           {/* Links (desktop) */}
           <div className="hidden md:flex space-x-6 text-white font-medium">
-            <a href="#" className="hover:text-gray-300 transition">Login</a>
-            <a href="#" className="hover:text-gray-300 transition">Camisa 10</a>
-            <a href="#" className="hover:text-gray-300 transition">Joga Junto</a>
-            <a href="#" className="hover:text-gray-300 transition">Voluntários</a>
-            <a href="#" className="hover:text-gray-300 transition">Doação</a>
-            <a href="#" className="hover:text-gray-300 transition">Parceiros</a>
+            <Link to="/" className="hover:text-gray-300 transition">Início</Link>
+            <Link to="/login" className="hover:text-gray-300 transition">Login</Link>
+            <Link to="/camisa10" className="hover:text-gray-300 transition">Camisa 10</Link>
+            <Link to="/jogajunto" className="hover:text-gray-300 transition">Joga Junto</Link>
+            <Link to="/voluntarios" className="hover:text-gray-300 transition">Voluntários</Link>
+            <Link to="/doacao" className="hover:text-gray-300 transition">Doação</Link>
+            <Link to="/parceiros" className="hover:text-gray-300 transition">Parceiros</Link>
           </div>
         </div>
       </div>
@@ -70,12 +68,12 @@ export default function NavBar() {
       {/* Menu Mobile */}
       {isOpen && (
         <div className="md:hidden bg-blue-600 px-4 pb-3 space-y-2">
-          <a href="#" className="block text-white hover:text-gray-300">Login</a>
-          <a href="#" className="block text-white hover:text-gray-300">Camisa 10</a>
-          <a href="#" className="block text-white hover:text-gray-300">Joga Junto</a>
-          <a href="#" className="block text-white hover:text-gray-300">Voluntários</a>
-          <a href="#" className="block text-white hover:text-gray-300">Doação</a>
-          <a href="#" className="block text-white hover:text-gray-300">Parceiros</a>
+          <Link to="/login" className="block text-white hover:text-gray-300">Login</Link>
+          <Link to="/camisa10" className="block text-white hover:text-gray-300">Camisa 10</Link>
+          <Link to="/jogajunto" className="block text-white hover:text-gray-300">Joga Junto</Link>
+          <Link to="/voluntarios" className="block text-white hover:text-gray-300">Voluntários</Link>
+          <Link to="/doacao" className="block text-white hover:text-gray-300">Doação</Link>
+          <Link to="/parceiros" className="block text-white hover:text-gray-300">Parceiros</Link>
         </div>
       )}
     </nav>

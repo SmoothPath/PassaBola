@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../components/Navbar"; // se tiver
 import { useAuth } from "../components/contexts/AuthContext";
 
 export default function PerfilADM() {
@@ -10,7 +9,6 @@ export default function PerfilADM() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Painel Administrativo

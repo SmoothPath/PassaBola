@@ -1,6 +1,5 @@
 // frontend/src/pages/EventosLista.jsx
 import React, { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
 import { listEventos, deleteEvento } from "../services/eventos";
 import { useNavigate } from "react-router-dom";
 
@@ -37,7 +36,7 @@ export default function EventosLista() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+    
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Eventos</h1>

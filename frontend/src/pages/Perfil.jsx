@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import api from "../services/api"; // Axios já configurado com token
 
 const quizQuestions = [
@@ -84,7 +82,6 @@ const Perfil = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      <Navbar />
       <main className="flex-grow px-4 py-8">
         {/* Perfil da jogadora */}
         <div className="max-w-xl mx-auto bg-white rounded-lg shadow p-6 mb-8">
@@ -143,7 +140,6 @@ const Perfil = () => {
           </div>
         )}
       </main>
-      <Footer />
     </div>
   );
 };

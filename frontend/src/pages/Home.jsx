@@ -1,14 +1,11 @@
 import React from "react";
-import Navbar from "../components/Navbar";
 import Login from "../components/Login";
 import Sobre from "../components/Sobre";
-import Footer from "../components/Footer";
 
 const Home = () => {
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
-      <Navbar />
-
+    
       <main className="flex-grow">
         {/* Seção com vídeo e texto de boas-vindas */}
         <section
@@ -46,8 +43,6 @@ const Home = () => {
         <Sobre />
         <Login />
       </main>
-
-      <Footer />
     </div>
   );
 };
