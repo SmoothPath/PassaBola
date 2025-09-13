@@ -1,13 +1,14 @@
-// src/App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Home from "./pages/Home.jsx";               // garanta a extensão correta
+// Páginas
+import Home from "./pages/Home.jsx";
 import Perfil from "./pages/Perfil.jsx";
 import PerfilADM from "./pages/PerfilADM.jsx";
-import EventosLista from "./pages/EventosLista.jsx"; 
-import EventoNovo from "./pages/EventosNovo.jsx";     
+import EventosLista from "./pages/EventosLista.jsx";
+import EventoNovo from "./pages/EventosNovo.jsx";
 
+// Contextos e rotas protegidas
 import { AuthProvider } from "./components/contexts/AuthContext.jsx";
 import AdminRoute from "./components/routes/AdminRoute.jsx";
 
@@ -16,9 +17,10 @@ export default function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Página inicial */}
           <Route path="/" element={<Home />} />
 
-          {/* protegido */}
+          {/* Rotas protegidas */}
           <Route
             path="/admin"
             element={
@@ -26,13 +28,10 @@ export default function App() {
                 <PerfilADM />
               </AdminRoute>
             }
-            />
-            <Route
-              path="/perfil"
-              element={
-                <Perfil/>}
-            />
-            
+          />
+
+          <Route path="/perfil" element={<Perfil />} />
+
           <Route
             path="/eventos"
             element={
@@ -41,6 +40,7 @@ export default function App() {
               </AdminRoute>
             }
           />
+
           <Route
             path="/eventos/novo"
             element={
@@ -50,8 +50,11 @@ export default function App() {
             }
           />
 
-          {/* 404 simples */}
-          <Route path="*" element={<div style={{ padding: 24 }}>Página não encontrada</div>} />
+          {/* Página 404 */}
+          <Route
+            path="*"
+            element={<div style={{ padding: 24 }}>Página não encontrada</div>}
+          />
         </Routes>
       </Router>
     </AuthProvider>

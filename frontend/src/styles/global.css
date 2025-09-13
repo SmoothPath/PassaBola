@@ -1,12 +1,27 @@
 @import "tailwindcss";
 
+/* Fontes externas */
+@import url('https://fonts.googleapis.com/css2?family=Anton&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
+
+/* Fontes personalizadas */
+.font-anton {
+  font-family: 'Anton', sans-serif;
+}
+
+.font-agrandir {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Base global */
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
   margin: 0;
   background-color: #fff;
   color: #333;
 }
 
+/* --- NAVBAR --- */
 .navbar {
   background-color: #3f51b5;
   color: white;
@@ -39,9 +54,10 @@ body {
 }
 
 .navbar-right a:hover {
-  color: #ff637d; /* rosa suave no hover */
+  color: #ff637d;
 }
 
+/* --- CONTAINER PADRÃO (login, etc) --- */
 .container {
   max-width: 400px;
   margin: 40px auto;
@@ -95,4 +111,9 @@ p a {
 
 p a:hover {
   color: #d94f70;
+}
+
+/* Sombra em texto branco para fundo escuro */
+.text-shadow {
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
 }
