@@ -3,21 +3,22 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "../styles/global.css";
 
-export default function Navbar() {
+export default function NavBar() {
   return (
-    <nav className="navbar">
-      <div className="navbar-left">
-        <img src="/logo.png" alt="Passa a Bola" className="logo" />
-        <h1 className="brand">PASSA A BOLA</h1>
-      </div>
-      <div className="navbar-right">
-        <Link to="/">LOGIN</Link>
-        <Link to="/">CAMISA 10</Link>
-        <Link to="/">JOGA JUNTO</Link>
-        <Link to="/voluntarios">VOLUNTÁRIOS</Link>
-        <Link to="/">DOAÇÃO</Link>
-        <Link to="/admin">PAINEL ADMINISTRATIVO</Link>
-      </div>
-    </nav>
+   <nav className="navbar">
+        <div className="navbar-left">
+          <img src="" alt="Logo" className="logo" />
+          <div className="brand">PASSA A BOLA</div>
+        </div>
+        <div className="navbar-right">
+          <a href="#" className="hover:text-gray-300 transition">Login</a>
+          <a href="#" className="hover:text-gray-300 transition">Camisa 10</a>
+          <a href="#" className="hover:text-gray-300 transition">Joga Junto</a>
+          <a href="#" className="hover:text-gray-300 transition">Voluntários</a>
+          <a href="#" className="hover:text-gray-300 transition">Doação</a>
+          <a href="#" className="hover:text-gray-300 transition">Parceiros</a>
+        </div>
+      </nav>
+
   );
 }
