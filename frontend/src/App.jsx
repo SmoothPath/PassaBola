@@ -7,7 +7,6 @@ import Footer from "./components/Footer";
 
 // Páginas
 import Home from "./pages/Home";
-import Perfil from "./pages/Perfil";
 import PerfilADM from "./pages/PerfilADM";
 import EventosLista from "./pages/EventosLista";
 import EventosNovo from "./pages/EventosNovo";
@@ -22,6 +21,7 @@ import Camisa10 from "./pages/Camisa10"; // Página Loja Camisa10
 import { AuthProvider } from "./components/contexts/AuthContext";
 import AdminRoute from "./components/routes/AdminRoute";
 import Login from "./components/Login";
+import ProfileRedirect from "./components/ProfileRedirect";
 
 export default function App() {
   return (
@@ -30,19 +30,22 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/perfiladm" element={<PerfilADM />} /> {/* ✅ Adicionada */}
+
+          {/* Redireciona com base no tipo de usuário */}
+          <Route path="/perfil" element={<ProfileRedirect />} />
+
+          {/* Admin acessa diretamente também */}
+          <Route path="/perfiladm" element={<PerfilADM />} />
+
           <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
           <Route path="/eventos" element={<ExplorarEventos />} />
           <Route path="/jogajunto" element={<JogaJunto />} />
           <Route path="/voluntarios" element={<Voluntarios />} />
           <Route path="/doacao" element={<Doacao />} />
           <Route path="/login" element={<Login />} />
-
-          {/* Rota da página da loja */}
           <Route path="/camisa10" element={<Camisa10 />} />
 
-          {/* Rotas admin protegidas */}
+          {/* Rotas protegidas para admin */}
           <Route
             path="/admin"
             element={

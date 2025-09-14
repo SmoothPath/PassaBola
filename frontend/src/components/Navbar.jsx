@@ -42,9 +42,12 @@ export default function NavBar() {
           {/* Botão hambúrguer (mobile) */}
           <div className="flex md:hidden">
             <button
+              type="button"
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-gray-300 focus:outline-none"
               aria-label="Menu"
+              aria-expanded={isOpen}
+              aria-controls="mobile-menu"
             >
               <svg
                 className="h-6 w-6"
@@ -76,6 +79,7 @@ export default function NavBar() {
           <div className="hidden md:flex space-x-6 text-white font-medium">
             <Link to="/" onClick={handleLinkClick} className="hover:text-gray-300 transition">Início</Link>
             <button
+              type="button"
               onClick={handlePerfilClick}
               className="hover:text-gray-300 transition"
             >
@@ -92,8 +96,17 @@ export default function NavBar() {
 
       {/* Menu Mobile */}
       {isOpen && (
-        <div className="md:hidden bg-blue-600 px-4 pb-3 space-y-2">
-          <button onClick={handlePerfilClick} className="block text-white hover:text-gray-300">Perfil</button>
+        <div
+          id="mobile-menu"
+          className="md:hidden bg-blue-600 px-4 pb-3 space-y-2"
+        >
+          <button
+            type="button"
+            onClick={handlePerfilClick}
+            className="block text-white hover:text-gray-300"
+          >
+            Perfil
+          </button>
           <Link to="/camisa10" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Camisa 10</Link>
           <Link to="/jogajunto" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Joga Junto</Link>
           <Link to="/voluntarios" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Voluntários</Link>
