@@ -1,5 +1,5 @@
-// src/pages/Camisa10.jsx
 import React from "react";
+import PageWrapper from "../components/PageWrapper";
 
 const produtos = [
   {
@@ -23,31 +23,31 @@ const produtos = [
   {
     id: 4,
     nome: "Munhequeira",
-    imagem: "https://i.imgur.com/broken-link.png", // Substitua por imagem válida
+    imagem: "https://via.placeholder.com/200x150.png?text=Munhequeira",
     preco: 50.0,
   },
   {
     id: 5,
     nome: "Garrafa",
-    imagem: "https://i.imgur.com/broken-link.png", // Substitua por imagem válida
+    imagem: "https://via.placeholder.com/200x150.png?text=Garrafa",
     preco: 80.0,
   },
   {
     id: 6,
     nome: "Tornozeleira",
-    imagem: "https://i.imgur.com/broken-link.png", // Substitua por imagem válida
+    imagem: "https://via.placeholder.com/200x150.png?text=Tornozeleira",
     preco: 60.0,
   },
 ];
 
 export default function Camisa10() {
   return (
-    <div style={{ padding: "20px" }}>
-      <h1>Loja Camisa 10 – Passa a Bola</h1>
+    <PageWrapper>
+      <h1 style={{ marginBottom: 20 }}>Loja Camisa 10 – Passa a Bola</h1>
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
+          gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))",
           gap: "20px",
           maxWidth: 1000,
           margin: "0 auto",
@@ -79,7 +79,7 @@ export default function Camisa10() {
                   "https://via.placeholder.com/200x150.png?text=Imagem+Indisponível";
               }}
             />
-            <h3>{produto.nome}</h3>
+            <h3 style={{ margin: "10px 0" }}>{produto.nome}</h3>
             <p>R$ {produto.preco.toFixed(2)}</p>
             <button
               style={{
@@ -90,6 +90,7 @@ export default function Camisa10() {
                 borderRadius: 4,
                 cursor: "pointer",
                 fontWeight: "bold",
+                marginTop: 10,
               }}
               onClick={() =>
                 alert(`Produto ${produto.nome} adicionado ao carrinho!`)
@@ -100,6 +101,6 @@ export default function Camisa10() {
           </div>
         ))}
       </div>
-    </div>
+    </PageWrapper>
   );
 }

@@ -1,5 +1,5 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 // Componentes fixos
 import Navbar from "./components/Navbar";
@@ -15,7 +15,7 @@ import MeusEventos from "./pages/MeusEventos";
 import ExplorarEventos from "./pages/ExplorarEventos";
 import Voluntarios from "./pages/Voluntarios";
 import Doacao from "./pages/Doacao";
-import Camisa10 from "./pages/Camisa10"; // Página Loja Camisa10
+import Camisa10 from "./pages/Camisa10";
 
 // Contextos e rotas protegidas
 import { AuthProvider } from "./components/contexts/AuthContext";
@@ -23,10 +23,22 @@ import AdminRoute from "./components/routes/AdminRoute";
 import Login from "./components/Login";
 import ProfileRedirect from "./components/ProfileRedirect";
 
+// Componente para resetar o scroll ao mudar rota
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+
+  return null;
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <Router>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

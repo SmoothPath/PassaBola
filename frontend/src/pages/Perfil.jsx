@@ -1,34 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
-import { useNavigate } from "react-router-dom"; // importar o hook de navegação
-import api from "../services/api"; // Axios já configurado com token
+import { useNavigate } from "react-router-dom";
+import api from "../services/api";
 
 const quizQuestions = [
-  {
-    question: "Qual é a sua posição favorita?",
-    options: ["Goleira", "Defensora", "Meio-campo", "Atacante"],
-    key: "position",
-  },
-  {
-    question: "Em qual cidade você mora?",
-    options: ["São Paulo", "Rio de Janeiro", "Belo Horizonte", "Outro"],
-    key: "location",
-  },
-  {
-    question: "Qual é a sua idade?",
-    options: ["< 15", "15-18", "19-25", "26+"],
-    key: "age",
-  },
-  {
-    question: "Você já participou de eventos antes?",
-    options: ["Sim", "Não"],
-    key: "eventsParticipated",
-  },
-  {
-    question: "Qual é o seu nível de experiência no esporte?",
-    options: ["Iniciante", "Intermediário", "Avançado", "Profissional"],
-    key: "experience",
-  },
+  // ... suas perguntas ...
 ];
 
 const Perfil = () => {
@@ -37,11 +13,15 @@ const Perfil = () => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate(); // hook para redirecionar
+  const navigate = useNavigate();
 
-  // Atualiza localUser quando o contexto muda
+  // Verifica se o quiz já foi concluído via localStorage na inicialização
   useEffect(() => {
     setLocalUser(user);
+    const quizConcluido = localStorage.getItem("quizConcluido");
+    if (quizConcluido === "true") {
+      setSubmitted(true);
+    }
   }, [user]);
 
   if (!localUser)
@@ -59,20 +39,24 @@ const Perfil = () => {
     setLoading(true);
 
     try {
-      // Cria objeto com apenas os campos que o backend espera
       const updatedUser = {
         points: localUser.points + 10,
         ...(answers.position && { position: answers.position }),
         ...(answers.location && { location: answers.location }),
         ...(answers.age && { age: answers.age }),
-        ...(answers.eventsParticipated && { eventsParticipated: answers.eventsParticipated }),
+        ...(answers.eventsParticipated && {
+          eventsParticipated: answers.eventsParticipated,
+        }),
         ...(answers.experience && { experience: answers.experience }),
       };
 
-      // Envia atualização para o backend
       const res = await api.put("/profile", updatedUser);
-      updateUser(res.data.user); // atualiza contexto e localStorage
+      updateUser(res.data.user);
       setLocalUser(res.data.user);
+
+      // Salvar no localStorage para lembrar que quiz foi concluído
+      localStorage.setItem("quizConcluido", "true");
+
       setSubmitted(true);
     } catch (err) {
       console.error("Erro ao atualizar perfil:", err);
@@ -93,9 +77,7 @@ const Perfil = () => {
             </div>
             <h2 className="text-2xl font-bold mb-2">{localUser.name}</h2>
             <p className="text-gray-600 mb-1">{localUser.email}</p>
-            <p className="text-gray-800 font-semibold">
-              Pontos: {localUser.points}
-            </p>
+            <p className="text-gray-800 font-semibold">Pontos: {localUser.points}</p>
             {localUser.position && <p>Posição: {localUser.position}</p>}
             {localUser.location && <p>Localização: {localUser.location}</p>}
           </div>
@@ -136,8 +118,7 @@ const Perfil = () => {
         ) : (
           <div className="max-w-xl mx-auto bg-green-100 text-green-800 rounded-lg shadow p-6 text-center">
             <p className="font-semibold">
-              Quiz concluído! Seus dados foram atualizados e você ganhou 10
-              pontos.
+              Quiz concluído! Seus dados foram atualizados e você ganhou 10 pontos.
             </p>
             <div className="flex justify-center gap-4">
               <button

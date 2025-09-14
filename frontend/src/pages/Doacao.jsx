@@ -20,8 +20,27 @@ export default function Doacao() {
     setMensagem('');
   };
 
+  const handleVoltar = () => {
+    window.history.back();
+  };
+
   return (
     <div className="doacao-container">
+      <button
+        onClick={handleVoltar}
+        aria-label="Voltar para a página anterior"
+        style={{
+          marginBottom: '1rem',
+          padding: '0.5rem 1rem',
+          borderRadius: '6px',
+          border: '1px solid #ccc',
+          backgroundColor: '#f5f5f5',
+          cursor: 'pointer',
+        }}
+      >
+        ← Voltar
+      </button>
+
       <h1>Doe Agora</h1>
       <p>Sua contribuição faz toda a diferença! Ajude-nos a continuar esse projeto incrível.</p>
       
