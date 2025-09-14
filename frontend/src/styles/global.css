@@ -3,7 +3,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400&display=swap');
 
 /* ===== TAILWIND BASE ===== */
-@import "tailwindcss";
+@import "tailwindcss"; /* Certifique-se que seu setup suporta @import do Tailwind assim */
 
 /* ===== FONTES PERSONALIZADAS ===== */
 .font-anton {
@@ -73,7 +73,8 @@ h1 {
 
 /* Inputs e botões gerais */
 input,
-select {
+select,
+textarea {
   width: 100%;
   padding: 10px;
   margin-bottom: 10px;
@@ -82,6 +83,7 @@ select {
   font-size: 1rem;
   box-sizing: border-box;
   font-family: inherit;
+  resize: vertical; /* para textarea */
 }
 
 button {
@@ -128,10 +130,10 @@ p a:hover {
   text-align: center;
 }
 
-/* ===== AJUSTE PARA 2 FILEIRAS COM 3 PRODUTOS ===== */
+/* Ajuste para 2 fileiras com 3 produtos */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   justify-content: center;
   margin-top: 2rem;
@@ -218,13 +220,15 @@ p a:hover {
 }
 
 .doacao-form input,
-.doacao-form select {
+.doacao-form select,
+.doacao-form textarea {
   border: 1px solid #d94f70;
   transition: border-color 0.3s ease;
 }
 
 .doacao-form input:focus,
-.doacao-form select:focus {
+.doacao-form select:focus,
+.doacao-form textarea:focus {
   border-color: #b63f58;
   outline: none;
   box-shadow: 0 0 8px rgba(182, 63, 88, 0.5);
@@ -241,6 +245,30 @@ p a:hover {
 
 .doacao-form button:hover {
   background-color: #b63f58;
+}
+
+/* ===== BOTÃO VOLTAR ===== */
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ccc;
+  background-color: #f8f9fa;
+  color: #333;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 1rem;
+  user-select: none;
+  text-decoration: none;
+}
+
+.back-button:hover {
+  background-color: #e2e6ea;
+  color: #000;
 }
 
 /* ===== RESPONSIVO: CELULARES ===== */

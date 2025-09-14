@@ -23,7 +23,7 @@ import AdminRoute from "./components/routes/AdminRoute";
 import Login from "./components/Login";
 import ProfileRedirect from "./components/ProfileRedirect";
 
-// Componente para resetar o scroll ao mudar rota
+// Componente para resetar scroll ao mudar rota
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -42,13 +42,8 @@ export default function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-
-          {/* Redireciona com base no tipo de usuário */}
           <Route path="/perfil" element={<ProfileRedirect />} />
-
-          {/* Admin acessa diretamente também */}
           <Route path="/perfiladm" element={<PerfilADM />} />
-
           <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
           <Route path="/eventos" element={<ExplorarEventos />} />
           <Route path="/jogajunto" element={<JogaJunto />} />

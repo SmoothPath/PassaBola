@@ -1,25 +1,18 @@
 import React from "react";
 
 export default function VoltarButton() {
-  const handleVoltar = () => {
+  function voltarPagina() {
     window.history.back();
-  };
+  }
 
   return (
     <button
-      onClick={handleVoltar}
-      style={{
-        padding: "8px 12px",
-        borderRadius: "4px",
-        border: "none",
-        backgroundColor: "#007bff",
-        color: "#fff",
-        cursor: "pointer",
-        fontWeight: "bold",
-        marginBottom: "20px",
-      }}
+      onClick={voltarPagina}
+      className="voltar-button"
+      aria-label="Voltar à página anterior"
+      type="button"
     >
-      Voltar
+      ← Voltar
     </button>
   );
 }
