@@ -1,10 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../../services/api';
 
-const AuthContext = createContext();
+// Cria o contexto
+export const AuthContext = createContext();
 
+// Hook customizado para usar o contexto
 export const useAuth = () => useContext(AuthContext);
 
+// Provider do contexto
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -31,7 +34,6 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setUser(user);
 
-      // Retorna user e token
       return { user, token };
     } catch (error) {
       console.error('Erro no login:', error);
@@ -50,7 +52,6 @@ export const AuthProvider = ({ children }) => {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       setUser(user);
 
-      // Retorna user e token
       return { user, token };
     } catch (error) {
       console.error('Erro no registro:', error);
@@ -76,4 +77,3 @@ export const AuthProvider = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

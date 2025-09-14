@@ -1,8 +1,27 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "./contexts/AuthContext";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
+
+  const handlePerfilClick = () => {
+    setIsOpen(false); // fecha menu mobile se estiver aberto
+    if (!user) {
+      navigate("/login");
+    } else if (user.role === "admin") {
+      navigate("/perfiladm");
+    } else {
+      navigate("/perfil");
+    }
+  };
+
+  // Fecha menu mobile ao clicar em links normais
+  const handleLinkClick = () => {
+    setIsOpen(false);
+  };
 
   return (
     <nav className="bg-blue-700 shadow-md">
@@ -25,6 +44,7 @@ export default function NavBar() {
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="text-white hover:text-gray-300 focus:outline-none"
+              aria-label="Menu"
             >
               <svg
                 className="h-6 w-6"
@@ -54,13 +74,18 @@ export default function NavBar() {
 
           {/* Links (desktop) */}
           <div className="hidden md:flex space-x-6 text-white font-medium">
-            <Link to="/" className="hover:text-gray-300 transition">Início</Link>
-            <Link to="/login" className="hover:text-gray-300 transition">Login</Link>
-            <Link to="/camisa10" className="hover:text-gray-300 transition">Camisa 10</Link>
-            <Link to="/jogajunto" className="hover:text-gray-300 transition">Joga Junto</Link>
-            <Link to="/voluntarios" className="hover:text-gray-300 transition">Voluntários</Link>
-            <Link to="/doacao" className="hover:text-gray-300 transition">Doação</Link>
-            <Link to="/parceiros" className="hover:text-gray-300 transition">Parceiros</Link>
+            <Link to="/" onClick={handleLinkClick} className="hover:text-gray-300 transition">Início</Link>
+            <button
+              onClick={handlePerfilClick}
+              className="hover:text-gray-300 transition"
+            >
+              Perfil
+            </button>
+            <Link to="/camisa10" onClick={handleLinkClick} className="hover:text-gray-300 transition">Camisa 10</Link>
+            <Link to="/jogajunto" onClick={handleLinkClick} className="hover:text-gray-300 transition">Joga Junto</Link>
+            <Link to="/voluntarios" onClick={handleLinkClick} className="hover:text-gray-300 transition">Voluntários</Link>
+            <Link to="/doacao" onClick={handleLinkClick} className="hover:text-gray-300 transition">Doação</Link>
+            <Link to="/parceiros" onClick={handleLinkClick} className="hover:text-gray-300 transition">Parceiros</Link>
           </div>
         </div>
       </div>
@@ -68,12 +93,12 @@ export default function NavBar() {
       {/* Menu Mobile */}
       {isOpen && (
         <div className="md:hidden bg-blue-600 px-4 pb-3 space-y-2">
-          <Link to="/login" className="block text-white hover:text-gray-300">Login</Link>
-          <Link to="/camisa10" className="block text-white hover:text-gray-300">Camisa 10</Link>
-          <Link to="/jogajunto" className="block text-white hover:text-gray-300">Joga Junto</Link>
-          <Link to="/voluntarios" className="block text-white hover:text-gray-300">Voluntários</Link>
-          <Link to="/doacao" className="block text-white hover:text-gray-300">Doação</Link>
-          <Link to="/parceiros" className="block text-white hover:text-gray-300">Parceiros</Link>
+          <button onClick={handlePerfilClick} className="block text-white hover:text-gray-300">Perfil</button>
+          <Link to="/camisa10" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Camisa 10</Link>
+          <Link to="/jogajunto" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Joga Junto</Link>
+          <Link to="/voluntarios" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Voluntários</Link>
+          <Link to="/doacao" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Doação</Link>
+          <Link to="/parceiros" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Parceiros</Link>
         </div>
       )}
     </nav>

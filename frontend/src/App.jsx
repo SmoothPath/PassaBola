@@ -16,7 +16,7 @@ import MeusEventos from "./pages/MeusEventos";
 import ExplorarEventos from "./pages/ExplorarEventos";
 import Voluntarios from "./pages/Voluntarios";
 import Doacao from "./pages/Doacao";
-import Camisa10 from "./pages/Camisa10";  // Página Loja Camisa10
+import Camisa10 from "./pages/Camisa10"; // Página Loja Camisa10
 
 // Contextos e rotas protegidas
 import { AuthProvider } from "./components/contexts/AuthContext";
@@ -31,6 +31,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/perfiladm" element={<PerfilADM />} /> {/* ✅ Adicionada */}
           <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
           <Route path="/eventos" element={<ExplorarEventos />} />
           <Route path="/jogajunto" element={<JogaJunto />} />
