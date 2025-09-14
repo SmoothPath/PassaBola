@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
+import { useNavigate } from "react-router-dom"; // importar o hook de navegação
 import api from "../services/api"; // Axios já configurado com token
 
 const quizQuestions = [
@@ -36,6 +37,7 @@ const Perfil = () => {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // hook para redirecionar
 
   // Atualiza localUser quando o contexto muda
   useEffect(() => {
@@ -137,6 +139,20 @@ const Perfil = () => {
               Quiz concluído! Seus dados foram atualizados e você ganhou 10
               pontos.
             </p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => navigate("/eventos/meus/inscritos")}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+              >
+                Meus eventos
+              </button>
+              <button
+                onClick={() => navigate("/eventos")}
+                className="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700"
+              >
+                Explorar eventos
+              </button>
+            </div>
           </div>
         )}
       </main>

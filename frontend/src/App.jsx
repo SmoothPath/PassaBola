@@ -13,6 +13,8 @@ import PerfilADM from "./pages/PerfilADM.jsx";
 import EventosLista from "./pages/EventosLista.jsx";
 import EventoNovo from "./pages/EventosNovo.jsx";
 import JogaJunto from "./pages/JogaJunto.jsx";
+import MeusEventos from "./pages/MeusEventos.jsx";
+import ExplorarEventos from "./pages/ExplorarEventos.jsx";
 
 // Contextos e rotas protegidas
 import { AuthProvider } from "./components/contexts/AuthContext.jsx";
@@ -42,9 +44,11 @@ export default function App() {
           />
 
           <Route path="/perfil" element={<Perfil />} />
+          <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
+          <Route path="/eventos" element={<ExplorarEventos />} />
 
           <Route
-            path="/eventos"
+            path="/admin/eventos"
             element={
               <AdminRoute>
                 <EventosLista />
@@ -53,7 +57,7 @@ export default function App() {
           />
 
           <Route
-            path="/eventos/novo"
+            path="/admin/eventos/novo"
             element={
               <AdminRoute>
                 <EventoNovo />

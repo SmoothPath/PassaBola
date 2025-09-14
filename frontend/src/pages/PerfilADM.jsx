@@ -48,7 +48,7 @@ export default function PerfilADM() {
             <p className="text-sm text-gray-600">Cadastre um novo evento.</p>
             <div className="flex gap-3 mt-4">
               <button
-                onClick={() => (window.location.href = "/eventos/novo")}
+                onClick={() => (window.location.href = "admin/eventos/novo")}
                 className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white"
               >
                 Novo evento
@@ -70,7 +70,7 @@ export default function PerfilADM() {
             </p>
             <div className="flex gap-3 mt-4">
               <button
-                onClick={() => (window.location.href = "/eventos")}
+                onClick={() => (window.location.href = "/admin/eventos")}
                 className="rounded-xl bg-violet-600 px-4 py-2.5 text-sm font-bold text-white"
               >
                 Abrir lista

@@ -60,6 +60,17 @@ router.get('/', authenticateToken, (req, res) => {
 });
 
 /**
+ * LISTAR EVENTOS INSCRITOS – do usuário atual
+ * ( precisa ficar antes de /:id para não ser interceptado)
+ */
+router.get('/meus/inscritos', authenticateToken, (req, res) => {
+  const meus = eventos.filter(e => e.inscritos.includes(req.user.email));
+  res.json({ ok: true, eventos: meus });
+});
+
+/**
+
+/**
  * READ – obter 1 evento (apenas autenticado)
  */
 router.get('/:id', authenticateToken, (req, res) => {
@@ -91,6 +102,48 @@ router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
   eventos = eventos.filter(e => e.id !== id);
   if (eventos.length === before) return res.status(404).json({ error: 'Evento não encontrado' });
   res.json({ ok: true });
+});
+
+
+
+/**
+ * INSCRIÇÃO – usuário se inscreve em um evento
+ */
+router.post('/:id/inscrever', authenticateToken, (req, res) => {
+  const id = Number(req.params.id);
+  const evt = eventos.find(e => e.id === id);
+  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+
+  if (evt.inscritos.includes(req.user.email)) {
+    return res.status(400).json({ error: 'Usuário já inscrito' });
+  }
+
+  if (evt.capacidade > 0 && evt.inscritos.length >= evt.capacidade) {
+    return res.status(400).json({ error: 'Capacidade máxima atingida' });
+  }
+
+  evt.inscritos.push(req.user.email);
+  res.json({ ok: true, evento: evt });
+});
+
+/**
+ * CANCELAR INSCRIÇÃO – usuário sai do evento
+ */
+router.post('/:id/cancelar', authenticateToken, (req, res) => {
+  const id = Number(req.params.id);
+  const evt = eventos.find(e => e.id === id);
+  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+
+  evt.inscritos = evt.inscritos.filter(email => email !== req.user.email);
+  res.json({ ok: true, evento: evt });
+});
+
+/**
+ * LISTAR EVENTOS INSCRITOS – do usuário atual
+ */
+router.get('/meus/inscritos', authenticateToken, (req, res) => {
+  const meus = eventos.filter(e => e.inscritos.includes(req.user.email));
+  res.json({ ok: true, eventos: meus });
 });
 
 module.exports = { router };
