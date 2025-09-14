@@ -5,35 +5,43 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-
 // Páginas
-import Home from "./pages/Home.jsx";
-import Perfil from "./pages/Perfil.jsx";
-import PerfilADM from "./pages/PerfilADM.jsx";
-import EventosLista from "./pages/EventosLista.jsx";
-import EventoNovo from "./pages/EventosNovo.jsx";
-import JogaJunto from "./pages/JogaJunto.jsx";
-import MeusEventos from "./pages/MeusEventos.jsx";
-import ExplorarEventos from "./pages/ExplorarEventos.jsx";
+import Home from "./pages/Home";
+import Perfil from "./pages/Perfil";
+import PerfilADM from "./pages/PerfilADM";
+import EventosLista from "./pages/EventosLista";
+import EventosNovo from "./pages/EventosNovo";
+import JogaJunto from "./pages/JogaJunto";
+import MeusEventos from "./pages/MeusEventos";
+import ExplorarEventos from "./pages/ExplorarEventos";
+import Voluntarios from "./pages/Voluntarios";
+import Doacao from "./pages/Doacao";
+import Camisa10 from "./pages/Camisa10";  // Página Loja Camisa10
 
 // Contextos e rotas protegidas
-import { AuthProvider } from "./components/contexts/AuthContext.jsx";
-import AdminRoute from "./components/routes/AdminRoute.jsx";
-import Login from "./components/Login.jsx";
+import { AuthProvider } from "./components/contexts/AuthContext";
+import AdminRoute from "./components/routes/AdminRoute";
+import Login from "./components/Login";
 
 export default function App() {
   return (
-
     <AuthProvider>
       <Router>
-         {/* Navbar sempre visível */}
         <Navbar />
-
         <Routes>
-          {/* Página inicial */}
           <Route path="/" element={<Home />} />
+          <Route path="/perfil" element={<Perfil />} />
+          <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
+          <Route path="/eventos" element={<ExplorarEventos />} />
+          <Route path="/jogajunto" element={<JogaJunto />} />
+          <Route path="/voluntarios" element={<Voluntarios />} />
+          <Route path="/doacao" element={<Doacao />} />
+          <Route path="/login" element={<Login />} />
 
-          {/* Rotas protegidas */}
+          {/* Rota da página da loja */}
+          <Route path="/camisa10" element={<Camisa10 />} />
+
+          {/* Rotas admin protegidas */}
           <Route
             path="/admin"
             element={
@@ -42,11 +50,6 @@ export default function App() {
               </AdminRoute>
             }
           />
-
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
-          <Route path="/eventos" element={<ExplorarEventos />} />
-
           <Route
             path="/admin/eventos"
             element={
@@ -55,20 +58,14 @@ export default function App() {
               </AdminRoute>
             }
           />
-
           <Route
             path="/admin/eventos/novo"
             element={
               <AdminRoute>
-                <EventoNovo />
+                <EventosNovo />
               </AdminRoute>
             }
           />
-
-          <Route path="/login" element={<Login />} />
-
-          {/* Nova página: JogaJunto */}
-            <Route path="/jogajunto" element={<JogaJunto />} />
 
           {/* Página 404 */}
           <Route
@@ -76,8 +73,7 @@ export default function App() {
             element={<div style={{ padding: 24 }}>Página não encontrada</div>}
           />
         </Routes>
-        {/*Footer sempre visível */}
-        <Footer/>
+        <Footer />
       </Router>
     </AuthProvider>
   );
