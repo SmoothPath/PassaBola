@@ -1,117 +1,84 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/AuthContext";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useAuth();
 
   const handlePerfilClick = () => {
-    setIsOpen(false); // fecha menu mobile se estiver aberto
-    if (!user) {
-      navigate("/login");
-    } else if (user.role === "admin") {
-      navigate("/perfiladm");
-    } else {
-      navigate("/perfil");
-    }
+    setIsOpen(false);
+    if (!user) navigate("/login");
+    else if (user.role === "admin") navigate("/perfiladm");
+    else navigate("/perfil");
   };
 
-  // Fecha menu mobile ao clicar em links normais
-  const handleLinkClick = () => {
+  const handleLogout = () => {
+    logout();
     setIsOpen(false);
+    navigate("/");
   };
+
+  const handleLinkClick = () => setIsOpen(false);
+
+  const MenuLinks = ({ vertical = false }) => (
+    <div className={`items-center gap-4 ${vertical ? "flex flex-col" : "flex"}`}>
+      <button onClick={handlePerfilClick} className="text-white hover:text-gray-300">
+        Perfil
+      </button>
+      <Link to="/camisa10" className="text-white hover:text-gray-300">Camisa 10</Link>
+      <Link to="/jogajunto" className="text-white hover:text-gray-300">Joga Junto</Link>
+      <Link to="/voluntarios" className="text-white hover:text-gray-300">Voluntários</Link>
+      <Link to="/doacao" className="text-white hover:text-gray-300">Doação</Link>
+      <Link to="/parceiros" className="text-white hover:text-gray-300">Parceiros</Link>
+      {user && (
+        <button onClick={handleLogout} className="text-white hover:text-gray-300">
+          Sair
+        </button>
+      )}
+    </div>
+  );
 
   return (
-    <nav className="bg-blue-700 shadow-md">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Esquerda: logo + marca */}
-          <div className="flex items-center space-x-3">
-            <img
-              src="/assets/logo.jpg"
-              alt="Logo"
-              className="w-10 h-10 object-contain rounded-full"
-            />
-            <span className="text-white text-xl font-bold tracking-wide">
-              PASSA A BOLA
-            </span>
-          </div>
+    <nav className="bg-gray-900 px-4 py-3">
+      <div className="mx-auto max-w-7xl flex items-center justify-between">
+        {/* ESQUERDA: logo + texto */}
+        <Link to="/" className="flex items-center gap-2">
+          <img
+            src="/assets/logo.jpg"
+            alt="Logo"
+            className="w-8 h-8 object-contain rounded-full"
+          />
+          <span className="text-white font-bold text-lg">Passa a Bola</span>
+        </Link>
 
-          {/* Botão hambúrguer (mobile) */}
-          <div className="flex md:hidden">
-            <button
-              type="button"
-              onClick={() => setIsOpen(!isOpen)}
-              className="text-white hover:text-gray-300 focus:outline-none"
-              aria-label="Menu"
-              aria-expanded={isOpen}
-              aria-controls="mobile-menu"
-            >
-              <svg
-                className="h-6 w-6"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
-              </svg>
-            </button>
-          </div>
-
-          {/* Links (desktop) */}
-          <div className="hidden md:flex space-x-6 text-white font-medium">
-            <Link to="/" onClick={handleLinkClick} className="hover:text-gray-300 transition">Início</Link>
-            <button
-              type="button"
-              onClick={handlePerfilClick}
-              className="hover:text-gray-300 transition"
-            >
-              Perfil
-            </button>
-            <Link to="/camisa10" onClick={handleLinkClick} className="hover:text-gray-300 transition">Camisa 10</Link>
-            <Link to="/jogajunto" onClick={handleLinkClick} className="hover:text-gray-300 transition">Joga Junto</Link>
-            <Link to="/voluntarios" onClick={handleLinkClick} className="hover:text-gray-300 transition">Voluntários</Link>
-            <Link to="/doacao" onClick={handleLinkClick} className="hover:text-gray-300 transition">Doação</Link>
-            <Link to="/parceiros" onClick={handleLinkClick} className="hover:text-gray-300 transition">Parceiros</Link>
-          </div>
+        {/* DIREITA: menu desktop */}
+        <div className="hidden md:flex ml-auto">
+          <MenuLinks />
         </div>
+
+        {/* Botão hambúrguer (mobile) */}
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="md:hidden text-white hover:text-gray-300 focus:outline-none ml-2"
+          aria-label="Menu"
+          aria-expanded={isOpen}
+        >
+          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            {isOpen ? (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+            ) : (
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            )}
+          </svg>
+        </button>
       </div>
 
-      {/* Menu Mobile */}
+      {/* menu mobile */}
       {isOpen && (
-        <div
-          id="mobile-menu"
-          className="md:hidden bg-blue-600 px-4 pb-3 space-y-2"
-        >
-          <button
-            type="button"
-            onClick={handlePerfilClick}
-            className="block text-white hover:text-gray-300"
-          >
-            Perfil
-          </button>
-          <Link to="/camisa10" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Camisa 10</Link>
-          <Link to="/jogajunto" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Joga Junto</Link>
-          <Link to="/voluntarios" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Voluntários</Link>
-          <Link to="/doacao" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Doação</Link>
-          <Link to="/parceiros" onClick={handleLinkClick} className="block text-white hover:text-gray-300">Parceiros</Link>
+        <div id="mobile-menu" className="md:hidden mt-3">
+          <MenuLinks vertical />
         </div>
       )}
     </nav>

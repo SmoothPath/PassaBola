@@ -1,68 +1,81 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../../services/api';
 
-// Cria o contexto
 export const AuthContext = createContext();
-
-// Hook customizado para usar o contexto
 export const useAuth = () => useContext(AuthContext);
 
-// Provider do contexto
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Carrega sessão existente
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
 
     if (token && savedUser) {
       api.defaults.headers.Authorization = `Bearer ${token}`;
-      setUser(JSON.parse(savedUser));
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch {
+        setUser(null);
+      }
     }
     setLoading(false);
   }, []);
 
+  // LOGIN
   const login = async (email, password) => {
-    try {
-      const response = await api.post('/login', { email, password });
-      const { token, user } = response.data;
+    const res = await api.post('/login', { email, password });
+    const { token, user: u } = res.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(u));
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+    setUser(u);
 
-      api.defaults.headers.Authorization = `Bearer ${token}`;
-      setUser(user);
-
-      return { user, token };
-    } catch (error) {
-      console.error('Erro no login:', error);
-      throw error;
-    }
+    return u;
   };
 
-  const register = async (email, password, name) => {
-    try {
-      const response = await api.post('/register', { email, password, name });
-      const { token, user } = response.data;
+  // REGISTER
+  const register = async (name, email, password) => {
+    const res = await api.post('/register', { name, email, password });
+    const { token, user: u } = res.data;
 
-      localStorage.setItem('token', token);
-      localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(u));
+    api.defaults.headers.Authorization = `Bearer ${token}`;
+    setUser(u);
 
-      api.defaults.headers.Authorization = `Bearer ${token}`;
-      setUser(user);
-
-      return { user, token };
-    } catch (error) {
-      console.error('Erro no registro:', error);
-      throw error;
-    }
+    return u;
   };
 
+  // Atualiza user global + localStorage
   const updateUser = (updatedUser) => {
-    localStorage.setItem('user', JSON.stringify(updatedUser));
     setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
   };
+
+  // ===== Persistência do status do quiz por usuário =====
+  const getQuizKey = (u) => {
+    try {
+      const id = u?.id || u?._id || u?.email || 'anon';
+      return `quizConcluido:${id}`;
+    } catch {
+      return 'quizConcluido:anon';
+    }
+  };
+
+  const getQuizStatus = (u) => {
+    const key = getQuizKey(u || user);
+    return localStorage.getItem(key) === 'true';
+  };
+
+  const setQuizStatus = (done, u) => {
+    const key = getQuizKey(u || user);
+    localStorage.setItem(key, done ? 'true' : 'false');
+  };
+  // ======================================================
 
   const logout = () => {
     localStorage.removeItem('token');
@@ -72,7 +85,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, updateUser, loading }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        login,
+        register,
+        logout,
+        updateUser,
+        loading,
+        getQuizStatus,
+        setQuizStatus,
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

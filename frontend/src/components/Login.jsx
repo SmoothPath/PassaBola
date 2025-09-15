@@ -3,7 +3,7 @@ import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-  const { login, register, updateUser } = useAuth();
+  const { login, register, updateUser, getQuizStatus } = useAuth();
   const navigate = useNavigate();
 
   const [name, setName] = useState("");
@@ -17,80 +17,87 @@ const Login = () => {
     setError("");
 
     try {
-      let res;
+      let u;
       if (isLogin) {
-        // Login
-        res = await login(email, password);
+        u = await login(email, password);
       } else {
-        // Registro
-        res = await register(email, password, name);
+        u = await register(name, email, password);
       }
 
       // Atualiza estado global com os dados do usuário
-      updateUser(res.user);
+      updateUser(u);
 
-      // Redireciona para Perfil.jsx
-      navigate("/perfil");
+      // Redireciona conforme perfil e status do quiz
+      if (u?.role === "admin" || u?.isAdmin) {
+        navigate("/perfiladm");
+      } else {
+        // leitura apenas — Perfil decide se mostra ou não o quiz
+        const _done = getQuizStatus(u);
+        navigate("/perfil");
+      }
     } catch (err) {
       console.error("Erro de autenticação:", err);
-      setError(err.response?.data?.error || "Ocorreu um erro. Tente novamente.");
+      setError(err?.response?.data?.error || "Ocorreu um erro. Tente novamente.");
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white px-4">
-      <div className="w-full max-w-md text-center">
-        <h1 className="mb-6 text-2xl font-semibold text-gray-800">
-          {isLogin ? "Entre na sua conta" : "Crie sua conta"}
+    <div className="min-h-screen flex items-center justify-center p-6">
+      <div className="w-full max-w-md bg-white rounded-xl shadow p-6">
+        <h1 className="text-2xl font-bold mb-4">
+          {isLogin ? "Entrar" : "Criar conta"}
         </h1>
 
-        {error && <div className="mb-4 text-red-600 font-medium">{error}</div>}
+        {error && (
+          <div className="mb-4 p-3 rounded bg-red-100 text-red-700 text-sm">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-3">
           {!isLogin && (
             <input
               type="text"
               placeholder="Nome"
+              className="w-full border rounded px-3 py-2"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full rounded-md border border-gray-300 px-3 py-2"
               required
             />
           )}
+
           <input
             type="email"
-            placeholder="Email"
+            placeholder="E-mail"
+            className="w-full border rounded px-3 py-2"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2"
             required
           />
+
           <input
             type="password"
             placeholder="Senha"
+            className="w-full border rounded px-3 py-2"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-md border border-gray-300 px-3 py-2"
             required
           />
 
           <button
             type="submit"
-            className="w-full bg-pink-600 text-white py-2 rounded-md"
+            className="w-full bg-pink-600 text-white py-2 rounded hover:bg-pink-700"
           >
             {isLogin ? "Entrar" : "Cadastrar"}
           </button>
         </form>
 
-        <p className="mt-4 text-sm text-gray-700">
-          {isLogin ? "Não tem uma conta? " : "Já tem uma conta? "}
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-indigo-600 underline"
-          >
-            {isLogin ? "Cadastre-se" : "Faça login"}
-          </button>
-        </p>
+        <button
+          className="mt-4 text-sm text-blue-600 underline"
+          onClick={() => setIsLogin((s) => !s)}
+        >
+          {isLogin ? "Criar conta" : "Já tenho conta"}
+        </button>
       </div>
     </div>
   );
