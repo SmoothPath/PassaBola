@@ -13,7 +13,7 @@ import EventosNovo from "./pages/EventosNovo";
 import JogaJunto from "./pages/JogaJunto";
 import MeusEventos from "./pages/MeusEventos";
 import ExplorarEventos from "./pages/ExplorarEventos";
-import EventoDetalhes from "./pages/EventoDetalhe"
+import EventoDetalhes from "./pages/EventoDetalhes";
 import Voluntarios from "./pages/Voluntarios";
 import Doacao from "./pages/Doacao";
 import Camisa10 from "./pages/Camisa10";
@@ -46,7 +46,8 @@ export default function App() {
           <Route path="/perfil" element={<ProfileRedirect />} />
           <Route path="/perfiladm" element={<PerfilADM />} />
           <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
-          <Route path="/eventos/:id" element={<ExplorarEventos />} />
+          <Route path="/eventos/:id" element={<EventoDetalhes />} />
+          <Route path="/eventos" element={<ExplorarEventos />} />
           <Route path="/jogajunto" element={<JogaJunto />} />
           <Route path="/voluntarios" element={<Voluntarios />} />
           <Route path="/doacao" element={<Doacao />} />

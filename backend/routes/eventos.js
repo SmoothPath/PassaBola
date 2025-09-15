@@ -126,6 +126,23 @@ router.post('/:id/inscrever', authenticateToken, (req, res) => {
   res.json({ ok: true, evento: evt });
 });
 
+// remover inscrito específico (apenas ADMIN)
+router.delete('/:id/inscritos/:email', authenticateToken, requireAdmin, (req, res) => {
+  const id = Number(req.params.id);
+  const email = decodeURIComponent(req.params.email || "").toLowerCase();
+
+  const evt = eventos.find(e => e.id === id);
+  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+  if (!email) return res.status(400).json({ error: 'Email inválido' });
+
+  const before = evt.inscritos.length;
+  evt.inscritos = evt.inscritos.filter(e => e.toLowerCase() != email);
+  const removed = evt.inscritos.length < before;
+
+  res.json({ ok: true, removed, evento: evt });
+});
+
+
 /**
  * CANCELAR INSCRIÇÃO – usuário sai do evento
  */

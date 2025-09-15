@@ -15,3 +15,9 @@ export const updateEvento = (id, payload) => api.put(`/eventos/${id}`, payload);
 
 // Remove evento
 export const deleteEvento = (id) => api.delete(`/eventos/${id}`);
+
+export const inscreverNoEvento = (id) => api.post(`/eventos/${id}/inscrever`);
+export const desinscreverDoEvento = (id) => api.post(`/eventos/${id}/desinscrever`);
+
+// (se aplicar o patch de backend para remover um inscrito específico)
+export const removerInscrito = (id, email) => api.delete(`/eventos/${id}/inscritos/${encodeURIComponent(email)}`);

@@ -1,6 +1,7 @@
 // frontend/src/pages/ExplorarEventos.jsx
 import React, { useEffect, useState } from "react";
 import { listEventos } from "../services/eventos";
+import { Link } from "react-router-dom";
 
 function formatDate(iso) {
   try {
@@ -14,7 +15,7 @@ function formatDate(iso) {
   }
 }
 
-function EventCard({ evt, onInscrever }) {
+function EventCard({ evt }) {
   return (
     <div className="rounded-2xl shadow-lg bg-white p-5 transition-all hover:shadow-xl border border-slate-100">
       <div className="flex items-start gap-3">
@@ -32,11 +33,17 @@ function EventCard({ evt, onInscrever }) {
       <div className="mt-4 space-y-2 text-sm">
         <div className="flex items-center justify-between">
           <span className="text-slate-500">Data</span>
-          <span className="font-medium text-slate-800">{formatDate(evt.dataISO)}</span>
+          <span className="font-medium text-slate-800">
+            {formatDate(evt.dataISO)}
+          </span>
         </div>
+
         {evt.descricao && (
-          <p className="text-slate-600 text-sm mt-1 line-clamp-2">{evt.descricao}</p>
+          <p className="text-slate-600 text-sm mt-1 line-clamp-2">
+            {evt.descricao}
+          </p>
         )}
+
         <div className="flex items-center gap-2 mt-2">
           <span className="px-2.5 py-1 rounded-full bg-slate-100 text-slate-700 text-xs">
             Capacidade: <strong>{evt.capacidade ?? 0}</strong>
@@ -60,12 +67,13 @@ function EventCard({ evt, onInscrever }) {
         </div>
       </div>
 
-      <button
-        onClick={() => navigate(`/eventos/${evt.id}`)}
-        className="mt-5 w-full rounded-xl bg-pink-600 text-white font-semibold py-2.5 hover:bg-pink-700 active:scale-[0.99] transition"
+      {/* Botão de detalhes (sem hook, usando Link) */}
+      <Link
+        to={`/eventos/${evt.id}`}
+        className="mt-5 block text-center w-full rounded-xl bg-pink-600 text-white font-semibold py-2.5 hover:bg-pink-700 active:scale-[0.99] transition"
       >
         Detalhes
-      </button>
+      </Link>
     </div>
   );
 }
@@ -87,11 +95,6 @@ export default function ExplorarEventos() {
     })();
   }, []);
 
-  const handleInscrever = (evt) => {
-    // aqui você pode chamar a rota de inscrição quando estiver pronta
-    console.log("Inscrever", evt.id);
-  };
-
   return (
     <div className="min-h-screen bg-slate-50">
       <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -102,7 +105,10 @@ export default function ExplorarEventos() {
         {loading ? (
           <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-48 rounded-2xl bg-white border border-slate-100 shadow animate-pulse" />
+              <div
+                key={i}
+                className="h-48 rounded-2xl bg-white border border-slate-100 shadow animate-pulse"
+              />
             ))}
           </div>
         ) : eventos.length === 0 ? (
@@ -112,7 +118,7 @@ export default function ExplorarEventos() {
         ) : (
           <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {eventos.map((evt) => (
-              <EventCard key={evt.id} evt={evt} onInscrever={handleInscrever} />
+              <EventCard key={evt.id} evt={evt} />
             ))}
           </div>
         )}
