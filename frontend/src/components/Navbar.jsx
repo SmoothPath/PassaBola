@@ -23,9 +23,9 @@ export default function NavBar() {
   };
 
   const linkBase =
-    "text-sm transition hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 rounded-md px-1.5 py-1";
-  const linkInactive = "text-slate-300";
-  const linkActive = "text-white font-semibold";
+    "text-sm font-agrandir whitespace-nowrap transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] rounded-md px-2 py-1";
+  const linkInactive = "text-[#7D1FA6]/80 hover:text-[#7D1FA6]";
+  const linkActive = "text-[#7D1FA6] font-semibold underline";
 
   const MenuLinks = ({ vertical = false }) => (
     <div className={`${vertical ? "flex flex-col gap-3" : "flex items-center gap-5"}`}>
@@ -76,7 +76,7 @@ export default function NavBar() {
       {user ? (
         <button
           onClick={handleLogout}
-          className="ml-1 rounded-xl bg-pink-600 text-white text-sm font-semibold px-4 py-2 hover:bg-pink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+          className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
         >
           Sair
         </button>
@@ -86,7 +86,7 @@ export default function NavBar() {
             closeMenu();
             navigate("/login");
           }}
-          className="ml-1 rounded-xl bg-pink-600 text-white text-sm font-semibold px-4 py-2 hover:bg-pink-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+          className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
         >
           Entrar
         </button>
@@ -96,29 +96,29 @@ export default function NavBar() {
 
   return (
     <nav
-      className="sticky top-0 z-40 bg-slate-900/95 backdrop-blur supports-[backdrop-filter]:bg-slate-900/80 shadow"
+      className="sticky top-0 z-40 bg-white shadow-md"
       aria-label="Barra de navegação principal"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-        {/* ESQUERDA: logo + texto */}
+        {/* LOGO E TEXTO */}
         <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
           <img
-            src="/assets/logo.jpg" // ajuste se seu caminho for diferente
+            src="/assets/logo.jpg"
             alt="Passa a Bola"
-            className="w-8 h-8 object-cover rounded-full"
+            className="w-9 h-9 object-cover rounded-full border-2 border-[#7D1FA6]"
           />
-          <span className="text-white font-bold text-lg tracking-tight">Passa a Bola</span>
+          <span className="text-[#7D1FA6] font-anton text-xl tracking-tight">Passa a Bola</span>
         </Link>
 
-        {/* DIREITA: menu desktop */}
+        {/* MENU DESKTOP */}
         <div className="hidden md:flex ml-auto">
           <MenuLinks />
         </div>
 
-        {/* Botão hambúrguer (mobile) */}
+        {/* BOTÃO MOBILE */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-white hover:text-gray-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500 ml-2"
+          className="md:hidden text-[#7D1FA6] hover:text-[#9124BF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] ml-2"
           aria-label="Abrir menu"
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
@@ -133,7 +133,7 @@ export default function NavBar() {
         </button>
       </div>
 
-      {/* menu mobile */}
+      {/* MENU MOBILE */}
       {isOpen && (
         <div id="mobile-menu" className="md:hidden mt-2 px-4 pb-3">
           <MenuLinks vertical />
