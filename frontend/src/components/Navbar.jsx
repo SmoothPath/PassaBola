@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
+import { useCart } from "./contexts/CartContext";
+import { FaShoppingCart } from "react-icons/fa";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  // Garantindo que cart seja um array mesmo que undefined
+  const { cart = [] } = useCart() || {};
 
   const closeMenu = () => setIsOpen(false);
 
@@ -29,7 +34,11 @@ export default function NavBar() {
 
   const MenuLinks = ({ vertical = false }) => (
     <div className={`${vertical ? "flex flex-col gap-3" : "flex items-center gap-5"}`}>
-      <button onClick={handlePerfilClick} className={`${linkBase} ${linkInactive}`}>
+      <button
+        onClick={handlePerfilClick}
+        className={`${linkBase} ${linkInactive}`}
+        aria-label="Ir para o perfil"
+      >
         Perfil
       </button>
 
@@ -73,10 +82,29 @@ export default function NavBar() {
         Parceiros
       </NavLink>
 
+      {/* Ícone do carrinho */}
+      <button
+        onClick={() => {
+          closeMenu();
+          navigate("/carrinho");
+        }}
+        className="relative text-[#7D1FA6] hover:text-[#9124BF]"
+        aria-label={`Ir para o carrinho, ${cart.length} item${cart.length !== 1 ? "s" : ""}`}
+      >
+        <FaShoppingCart size={20} />
+        {cart.length > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
+            {cart.length}
+          </span>
+        )}
+      </button>
+
+      {/* Botão Entrar / Sair */}
       {user ? (
         <button
           onClick={handleLogout}
           className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
+          aria-label="Sair da conta"
         >
           Sair
         </button>
@@ -87,6 +115,7 @@ export default function NavBar() {
             navigate("/login");
           }}
           className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
+          aria-label="Entrar na conta"
         >
           Entrar
         </button>
@@ -100,8 +129,8 @@ export default function NavBar() {
       aria-label="Barra de navegação principal"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-        {/* LOGO E TEXTO */}
-        <Link to="/" className="flex items-center gap-2" onClick={closeMenu}>
+        {/* Logo e nome */}
+        <Link to="/" className="flex items-center gap-2" onClick={closeMenu} aria-label="Página inicial">
           <img
             src="/assets/logo.jpg"
             alt="Passa a Bola"
@@ -110,16 +139,16 @@ export default function NavBar() {
           <span className="text-[#7D1FA6] font-anton text-xl tracking-tight">Passa a Bola</span>
         </Link>
 
-        {/* MENU DESKTOP */}
-        <div className="hidden md:flex ml-auto">
+        {/* Menu desktop */}
+        <div className="hidden md:flex ml-auto gap-5">
           <MenuLinks />
         </div>
 
-        {/* BOTÃO MOBILE */}
+        {/* Botão mobile */}
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="md:hidden text-[#7D1FA6] hover:text-[#9124BF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] ml-2"
-          aria-label="Abrir menu"
+          aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
         >
@@ -133,7 +162,7 @@ export default function NavBar() {
         </button>
       </div>
 
-      {/* MENU MOBILE */}
+      {/* Menu mobile */}
       {isOpen && (
         <div id="mobile-menu" className="md:hidden mt-2 px-4 pb-3">
           <MenuLinks vertical />
