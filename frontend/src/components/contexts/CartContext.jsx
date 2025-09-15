@@ -8,16 +8,23 @@ export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
   const addToCart = (produto) => {
+    // ✅ Garantir que apenas strings e números entrem no cart
+    const safeProduto = {
+      ...produto,
+      nome: String(produto.nome),
+      preco: Number(produto.preco),
+    };
+
     setCart((prevItems) => {
-      const itemExists = prevItems.find((item) => item.id === produto.id);
+      const itemExists = prevItems.find((item) => item.id === safeProduto.id);
       if (itemExists) {
         return prevItems.map((item) =>
-          item.id === produto.id
+          item.id === safeProduto.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        return [...prevItems, { ...produto, quantity: 1 }];
+        return [...prevItems, { ...safeProduto, quantity: 1 }];
       }
     });
   };

@@ -3,16 +3,16 @@ import React from "react";
 import { useCart } from "../components/contexts/CartContext";
 
 export default function CartPage() {
-  const { cartItems, removeFromCart } = useCart();
+  const { cart, removeFromCart } = useCart();
 
   return (
     <div style={{ padding: 20 }}>
       <h1>Seu Carrinho</h1>
-      {cartItems.length === 0 ? (
+      {cart.length === 0 ? (
         <p>Seu carrinho está vazio.</p>
       ) : (
         <ul>
-          {cartItems.map((item) => (
+          {cart.map((item) => (
             <li key={item.id} style={{ marginBottom: 10 }}>
               <strong>{item.nome}</strong> - R$ {item.preco.toFixed(2)}
               <button

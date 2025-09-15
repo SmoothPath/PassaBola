@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import { useCart } from "./contexts/CartContext";
-import { FaShoppingCart } from "react-icons/fa";
+// import { FaShoppingCart } from "react-icons/fa";
+import { MdShoppingCart } from "react-icons/md"; // no topo do arquivo
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -82,23 +83,23 @@ export default function NavBar() {
         Parceiros
       </NavLink>
 
-      {/* Ícone do carrinho */}
-      <button
-        onClick={() => {
-          closeMenu();
-          navigate("/carrinho");
-        }}
-        className="relative text-[#7D1FA6] hover:text-[#9124BF]"
-        aria-label={`Ir para o carrinho, ${cart.length} item${cart.length !== 1 ? "s" : ""}`}
-      >
-        <FaShoppingCart size={20} />
-        {cart.length > 0 && (
-          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
-            {cart.length}
-          </span>
-        )}
-      </button>
+  {/* Ícone do carrinho com emoji via código Unicode */}
+<button
+  onClick={() => {
+    closeMenu();
+    navigate("/carrinho");
+  }}
+  className="relative text-[#7D1FA6] hover:text-[#9124BF]"
+  aria-label={`Ir para o carrinho, ${cart.length} item${cart.length !== 1 ? "s" : ""}`}
+>
+  {"\u{1F6D2}"} {/* ✅ Emoji de carrinho */}
 
+  {cart.length > 0 && (
+    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
+      {cart.length}
+    </span>
+  )}
+</button>
       {/* Botão Entrar / Sair */}
       {user ? (
         <button

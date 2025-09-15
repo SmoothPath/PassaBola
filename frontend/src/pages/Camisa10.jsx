@@ -6,37 +6,37 @@ const produtos = [
   {
     id: 1,
     nome: "Camisa 10 - Passa a Bola",
-    imagem: "/assets/camisa10.png.jpg",
+    imagem: "/assets/camisa10.jpg",
     preco: 120.0,
   },
   {
     id: 2,
     nome: "Camisa Oficial Feminina",
-    imagem: "/assets/camisa-oficial.png.jpg",
+    imagem: "/assets/camisa-oficial.jpg",
     preco: 150.0,
   },
   {
     id: 3,
     nome: "Camisa Treino",
-    imagem: "/assets/camisa-treino.png.jpg",
+    imagem: "/assets/camisa-treino.jpg",
     preco: 100.0,
   },
   {
     id: 4,
     nome: "Munhequeira",
-    imagem: "/assets/munhequeira.png.jpg",
+    imagem: "/assets/munhequeira.jpg",
     preco: 50.0,
   },
   {
     id: 5,
     nome: "Garrafa",
-    imagem: "/assets/garrafa.png.jpg",
+    imagem: "/assets/garrafa.jpg",
     preco: 80.0,
   },
   {
     id: 6,
     nome: "Par de Meiões",
-    imagem: "/assets/meiao.png.jpg",
+    imagem: "/assets/meiao.jpg",
     preco: 60.0,
   },
 ];
