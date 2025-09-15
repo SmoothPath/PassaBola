@@ -3,7 +3,17 @@ import axios from "axios";
 
 // Configurar a base URL da API
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api/auth",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+});
+
+// Interceptar para anexar o token automaticamente em cada request
+
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token){
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
 });
 
 // Interceptar respostas para tratar erros de autenticação
