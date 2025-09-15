@@ -61,10 +61,10 @@ function EventCard({ evt, onInscrever }) {
       </div>
 
       <button
-        onClick={() => onInscrever?.(evt)}
+        onClick={() => navigate(`/eventos/${evt.id}`)}
         className="mt-5 w-full rounded-xl bg-pink-600 text-white font-semibold py-2.5 hover:bg-pink-700 active:scale-[0.99] transition"
       >
-        Inscrever-se
+        Detalhes
       </button>
     </div>
   );

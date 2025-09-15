@@ -41,7 +41,7 @@ export default function EventosLista() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Eventos</h1>
           <button className="rounded-xl bg-violet-600 text-white px-4 py-2.5 font-bold"
-            onClick={() => navigate("/eventos/novo")}>
+            onClick={() => navigate("/admin/eventos/novo")}>
             Novo evento
           </button>
         </div>
