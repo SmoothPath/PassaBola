@@ -34,7 +34,7 @@ export default function Doacao() {
           padding: '0.5rem 1rem',
           borderRadius: '6px',
           border: '1px solid #ccc',
-          backgroundColor: '#f5f5f5',
+          backgroundColor: '#7D1FA6',
           cursor: 'pointer',
         }}
       >

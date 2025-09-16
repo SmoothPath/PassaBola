@@ -48,7 +48,7 @@ export default function App() {
       <CartProvider> {/* Contexto do carrinho disponível na app inteira */}
         <Router>
           <ScrollToTop />
-          <Navbar />
+          <Navbar />       
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/perfil" element={<ProfileRedirect />} />

@@ -45,6 +45,7 @@ export default function Camisa10() {
   const { addToCart } = useCart(); // ✅ Pega função do contexto
 
   return (
+
     <PageWrapper>
       <h1 style={{ marginBottom: 20, textAlign: "center" }}>
         Loja Camisa 10 – Passa a Bola
