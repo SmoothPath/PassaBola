@@ -158,25 +158,39 @@ const Perfil = () => {
               </span>
             </div>
 
-            {quizQuestions.map((q, idx) => (
-              <div key={q.key} className="mb-4">
-                <p className="font-medium mb-2">{idx + 1}. {q.question}</p>
-                <div className="space-y-2">
-                  {q.options.map((option) => (
-                    <label key={option} className="flex items-center gap-2">
-                      <input
-                        type="radio"
-                        name={`q_${q.key}`}
-                        value={option}
-                        checked={answers[q.key] === option}
-                        onChange={() => handleOptionChange(q.key, option)}
-                      />
-                      {option}
-                    </label>
-                  ))}
-                </div>
-              </div>
-            ))}
+       {quizQuestions.map((q, idx) => (
+  <div key={q.key} className="mb-6">
+    <p className="font-medium mb-2">
+      {idx + 1}. {q.question}
+    </p>
+
+    {/* container em coluna */}
+    <div className="space-y-2">
+      {q.options.map((option) => (
+        <label
+          key={option}
+          className="flex items-center gap-3 cursor-pointer"
+        >
+          {/* coluna da bolinha centralizada */}
+          <div className="w-6 flex justify-center">
+            <input
+              type="radio"
+              name={`q_${q.key}`}
+              value={option}
+              checked={answers[q.key] === option}
+              onChange={() => handleOptionChange(q.key, option)}
+              className="form-radio text-purple-600 w-4 h-4"
+            />
+          </div>
+
+          {/* coluna do texto (mantida à esquerda) */}
+          <span>{option}</span>
+        </label>
+      ))}
+    </div>
+  </div>
+))}
+
 
             <button
               onClick={handleSubmitQuiz}
