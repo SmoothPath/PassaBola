@@ -109,6 +109,8 @@ node server.js
 ```bash
 cd frontend
 npm install
+npm install react-leaflet@4 leaflet
+npm install hugeicons-react
 npm run dev       # abre a aplicação no navegador
 ```
 
