@@ -74,14 +74,20 @@ const Perfil = () => {
   };
 
   const handleRefazerQuiz = () => {
-    setQuizStatus(false);
-    const cleaned = { ...localUser };
-    delete cleaned.quizAnswers;
-    setLocalUser(cleaned);
-    updateUser(cleaned);
-    setSubmitted(false);
-    setAnswers({});
-  };
+  setQuizStatus(false);
+
+  // zera respostas e remove pontos do quiz anterior
+  const cleaned = { ...localUser };
+  delete cleaned.quizAnswers;
+  if ((cleaned?.points || 0) >= 50) {
+    cleaned.points = (cleaned.points || 0) - 50;
+  }
+
+  setLocalUser(cleaned);
+  updateUser(cleaned);
+  setSubmitted(false);
+  setAnswers({});
+};
 
   // localização se houver
   const location =
