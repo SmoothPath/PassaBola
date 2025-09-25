@@ -23,11 +23,14 @@ const Perfil = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // pular quiz se já concluído
-  useEffect(() => {
-    setLocalUser(user);
-    if (user && getQuizStatus(user)) setSubmitted(true);
-  }, [user, getQuizStatus]);
+  
+  // pular quiz se já concluído e houver respostas salvas
+useEffect(() => {
+  setLocalUser(user);
+  if (user && getQuizStatus(user) && user.quizAnswers && Object.keys(user.quizAnswers).length > 0) {
+    setSubmitted(true);
+  }
+}, [user, getQuizStatus]);
 
   const totalQuestions = quizQuestions.length;
   const answeredCount = useMemo(
