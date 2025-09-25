@@ -40,30 +40,36 @@ const Voluntarios = () => {
   };
 
   return (
-    <div className="voluntarios-container">
+    <div className="px-4 py-8 text-center">
+      {/* Botão Voltar */}
       <button
         onClick={handleVoltar}
-        className="botao-voltar"
         aria-label="Voltar para a página anterior"
-        style={{
-          marginBottom: "1rem",
-          padding: "0.5rem 1rem",
-          borderRadius: "6px",
-          border: "1px solid #ccc",
-          backgroundColor: "#7D1FA6",
-          cursor: "pointer",
-        }}
+        className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-md border-2 border-[#7D1FA6] bg-[#F9F7FC] text-[#3F1A73] font-semibold transition-colors hover:bg-[#7D1FA6] hover:text-white"
       >
         ← Voltar
       </button>
 
-      <h1>Voluntários</h1>
-      <div className="cards-container">
+      {/* Título */}
+      <h1 className="mb-8 text-2xl font-semibold">Voluntários</h1>
+
+      {/* Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {opcoes.map((opcao, index) => (
-          <div key={index} className="card-voluntario">
-            <h2>{opcao.titulo}</h2>
-            <p>{opcao.descricao}</p>
-            <a href={opcao.link}>Saiba mais</a>
+          <div
+            key={index}
+            className="bg-white border-2 border-[#F26D9E] rounded-xl p-6 shadow-md hover:shadow-lg hover:scale-[1.03] transition-transform text-left flex flex-col justify-between"
+          >
+            <h2 className="mb-2 text-lg font-bold text-[#3F1A73]">
+              {opcao.titulo}
+            </h2>
+            <p className="mb-4 text-sm text-[#333]">{opcao.descricao}</p>
+            <a
+              href={opcao.link}
+              className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors"
+            >
+              Saiba mais
+            </a>
           </div>
         ))}
       </div>
