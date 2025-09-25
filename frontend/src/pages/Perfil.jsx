@@ -123,30 +123,35 @@ const Perfil = () => {
           </div>
 
           {/* respostas do quiz (se houver) */}
-          {displayAnswers && Object.keys(displayAnswers).length > 0 && (
-            <div className="mt-6 border-t pt-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="text-base font-semibold">Minhas respostas do quiz</h3>
-                <button
-                  onClick={handleRefazerQuiz}
-                  className="text-sm text-blue-600 hover:underline"
-                  title="Limpar conclusão e responder novamente"
-                >
-                  Refazer quiz
-                </button>
-              </div>
+         {/* respostas do quiz (se houver) */}
+{displayAnswers && Object.keys(displayAnswers).length > 0 && (
+  <div className="mt-6 border-t pt-4">
+    <div className="mb-3">
+      <h3 className="text-base font-semibold">Minhas respostas do quiz</h3>
+    </div>
 
-              <ul className="space-y-2 text-sm text-gray-800">
-                {Object.entries(displayAnswers).map(([key, value]) => (
-                  <li key={key} className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                    <span className="font-medium">{quizLabels[key] || key}:</span>
-                    <span>{String(value)}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+    <ul className="space-y-2 text-sm text-gray-800 mb-3">
+      {Object.entries(displayAnswers).map(([key, value]) => (
+        <li
+          key={key}
+          className="flex flex-col sm:flex-row sm:items-center sm:gap-2"
+        >
+          <span className="font-medium">{quizLabels[key] || key}:</span>
+          <span>{String(value)}</span>
+        </li>
+      ))}
+    </ul>
+
+    <button
+      onClick={handleRefazerQuiz}
+      className="px-3 py-1 text-xs font-medium text-blue-600 border border-blue-600 rounded hover:bg-blue-50 transition"
+      title="Limpar conclusão e responder novamente"
+    >
+      Refazer quiz
+    </button>
+  </div>
+)}
+</div>
 
         {/* QUIZ ou SUCESSO */}
         {!submitted ? (
@@ -179,7 +184,7 @@ const Perfil = () => {
               value={option}
               checked={answers[q.key] === option}
               onChange={() => handleOptionChange(q.key, option)}
-              className="form-radio text-purple-600 w-4 h-4"
+              className="w-4 h-4 border-2 border-gray-400 rounded-full appearance-none checked:bg-purple-600 checked:border-purple-600 focus:outline-none focus:ring-2 focus:ring-purple-400"
             />
           </div>
 
