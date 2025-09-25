@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import { useCart } from "./contexts/CartContext";
-// import { FaShoppingCart } from "react-icons/fa";
-import { MdShoppingCart } from "react-icons/md"; // no topo do arquivo
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -35,13 +33,22 @@ export default function NavBar() {
 
   const MenuLinks = ({ vertical = false }) => (
     <div className={`${vertical ? "flex flex-col gap-3" : "flex items-center gap-5"}`}>
-      <button
+
+      <NavLink
+        to="/"
+        onClick={closeMenu}
+        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+      >
+        Início
+      </NavLink>
+
+       <NavLink
+        to="/perfil"
         onClick={handlePerfilClick}
-        className={`${linkBase} ${linkInactive}`}
-        aria-label="Ir para o perfil"
+        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
       >
         Perfil
-      </button>
+      </NavLink>
 
       <NavLink
         to="/camisa10"
