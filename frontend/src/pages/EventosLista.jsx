@@ -2,12 +2,14 @@
 import React, { useEffect, useState } from "react";
 import { listEventos, deleteEvento } from "../services/eventos";
 import { useNavigate } from "react-router-dom";
+import Modal from "../components/Modal"; // Importar o modal
 
 export default function EventosLista() {
   const [items, setItems] = useState([]);
   const [q, setQ] = useState("");
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [selectedEvento, setSelectedEvento] = useState(null); // Evento selecionado
   const navigate = useNavigate();
     
   async function load() {
@@ -21,9 +23,6 @@ export default function EventosLista() {
     } finally {
       setLoading(false);
     }
-
-    return <div style={{ padding: 24 }}>Lista de eventos</div>;
-
   }
 
   useEffect(() => { load(); /* eslint-disable-next-line */ }, []);
@@ -36,7 +35,6 @@ export default function EventosLista() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-    
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold">Eventos</h1>
@@ -85,10 +83,16 @@ export default function EventosLista() {
                   <td className="p-3 capitalize">{e.status}</td>
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
-                      {/* futuro: editar */}
-                      {/* <button className="rounded-xl border px-3 py-1.5" onClick={()=>navigate(`/eventos/${e.id}/editar`)}>Editar</button> */}
-                      <button className="rounded-xl border px-3 py-1.5 text-rose-600 border-rose-300"
-                        onClick={()=>onDelete(e.id)}>
+                      <button
+                        className="rounded-xl border px-3 py-1.5 text-blue-600 border-blue-300"
+                        onClick={() => setSelectedEvento(e)}
+                      >
+                        Ver Detalhes
+                      </button>
+                      <button
+                        className="rounded-xl border px-3 py-1.5 text-rose-600 border-rose-300"
+                        onClick={() => onDelete(e.id)}
+                      >
                         Excluir
                       </button>
                     </div>
@@ -99,6 +103,21 @@ export default function EventosLista() {
           </table>
         </div>
       </main>
+
+      {/* Modal de detalhes do evento */}
+      <Modal isOpen={!!selectedEvento} onClose={() => setSelectedEvento(null)}>
+        {selectedEvento && (
+          <div>
+            <h2 className="text-xl font-bold mb-4">Detalhes do Evento</h2>
+            <p><strong>ID:</strong> {selectedEvento.id}</p>
+            <p><strong>Título:</strong> {selectedEvento.titulo}</p>
+            <p><strong>Data:</strong> {selectedEvento.dataISO?.replace('T',' ').slice(0,16)}</p>
+            <p><strong>Local:</strong> {selectedEvento.local}</p>
+            <p><strong>Capacidade:</strong> {selectedEvento.capacidade}</p>
+            <p><strong>Status:</strong> {selectedEvento.status}</p>
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

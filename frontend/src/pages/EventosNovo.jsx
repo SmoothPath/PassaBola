@@ -4,8 +4,9 @@ import { createEvento } from "../services/eventos";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import Modal from "../components/Modal"; // ✅ Importar o modal
 
-// FIX dos ícones do Leaflet (Vite/webpack)
+// FIX dos ícones do Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -16,7 +17,6 @@ L.Icon.Default.mergeOptions({
   iconUrl: markerIcon,
   shadowUrl: markerShadow,
 });
-
 
 // Componente para centralizar mapa
 function Recenter({ lat, lon }) {
@@ -35,13 +35,13 @@ export default function EventoNovo() {
     descricao: "",
     status: "ativo",
   });
-  const [coords, setCoords] = useState({ lat: -23.55052, lon: -46.633308 }); // São Paulo default
+  const [coords, setCoords] = useState({ lat: -23.55052, lon: -46.633308 }); // SP default
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
+  const [showModal, setShowModal] = useState(false); // ✅ Novo estado para o modal
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  // Busca coordenadas do endereço via Nominatim
   const buscarEndereco = async () => {
     if (!form.local) return alert("Digite o endereço do evento!");
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(form.local)}`;
@@ -71,7 +71,7 @@ export default function EventoNovo() {
         latitude: coords.lat,
         longitude: coords.lon,
       });
-      navigate("/eventos");
+      setShowModal(true); // ✅ Mostrar modal após sucesso
     } catch (e) {
       setErr("Falha ao criar evento.");
     } finally {
@@ -200,6 +200,24 @@ export default function EventoNovo() {
           </div>
         </form>
       </main>
+
+      {/* ✅ Modal de sucesso */}
+      <Modal isOpen={showModal} onClose={() => navigate("/eventos")}>
+        <h2 className="text-xl font-bold mb-4">Evento criado com sucesso!</h2>
+        <p><strong>Título:</strong> {form.titulo}</p>
+        <p><strong>Data:</strong> {form.dataISO}</p>
+        <p><strong>Local:</strong> {form.local}</p>
+        <p><strong>Capacidade:</strong> {form.capacidade}</p>
+        <p><strong>Status:</strong> {form.status}</p>
+        <div className="mt-4">
+          <button
+            onClick={() => navigate("/eventos")}
+            className="bg-violet-600 text-white px-4 py-2 rounded-xl"
+          >
+            Voltar à lista
+          </button>
+        </div>
+      </Modal>
     </div>
   );
 }

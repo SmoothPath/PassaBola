@@ -1,12 +1,15 @@
 // src/pages/Voluntarios.jsx
-import React from "react";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Voluntarios = () => {
+export default function Voluntarios() {
+  const [showModal, setShowModal] = useState(false);
+
   const opcoes = [
     {
       titulo: "Quero me voluntariar",
       descricao: "Veja como se tornar um voluntário.",
-      link: "/voluntarios/quero-ser",
+      onClick: () => setShowModal(true),
     },
     {
       titulo: "Ver oportunidades",
@@ -35,25 +38,18 @@ const Voluntarios = () => {
     },
   ];
 
-  const handleVoltar = () => {
-    window.history.back();
-  };
-
   return (
     <div className="px-4 py-8 text-center">
-      {/* Botão Voltar */}
       <button
-        onClick={handleVoltar}
+        onClick={() => window.history.back()}
         aria-label="Voltar para a página anterior"
         className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-md border-2 border-[#7D1FA6] bg-[#F9F7FC] text-[#3F1A73] font-semibold transition-colors hover:bg-[#7D1FA6] hover:text-white"
       >
         ← Voltar
       </button>
 
-      {/* Título */}
       <h1 className="mb-8 text-2xl font-semibold">Voluntários</h1>
 
-      {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         {opcoes.map((opcao, index) => (
           <div
@@ -64,17 +60,63 @@ const Voluntarios = () => {
               {opcao.titulo}
             </h2>
             <p className="mb-4 text-sm text-[#333]">{opcao.descricao}</p>
-            <a
-              href={opcao.link}
-              className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors"
-            >
-              Saiba mais
-            </a>
+
+            {opcao.onClick ? (
+              <button
+                onClick={opcao.onClick}
+                className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors text-left"
+              >
+                Saiba mais
+              </button>
+            ) : (
+              <Link
+                to={opcao.link}
+                className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors"
+              >
+                Saiba mais
+              </Link>
+            )}
           </div>
         ))}
       </div>
+
+      {showModal && (
+        <div
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
+              aria-label="Fechar modal"
+            >
+              &times;
+            </button>
+            <h2 className="text-xl font-bold mb-4">Quero me voluntariar</h2>
+            <p className="mb-4">
+              Obrigado pelo interesse em se voluntariar! Por favor, entre em
+              contato pelo email:{" "}
+              <a
+                href="mailto:voluntarios@exemplo.com"
+                className="text-purple-600 underline"
+              >
+                voluntarios@exemplo.com
+              </a>{" "}
+              ou ligue para (11) 99999-9999.
+            </p>
+            <button
+              onClick={() => setShowModal(false)}
+              className="mt-4 rounded-xl bg-purple-700 text-white px-4 py-2 hover:bg-purple-800 transition"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
-};
-
-export default Voluntarios;
+}

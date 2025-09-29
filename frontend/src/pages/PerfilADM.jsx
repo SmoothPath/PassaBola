@@ -1,15 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
+import Modal from "../components/Modal";
 
-export default function PerfilADM() {
+export default function PerfilADMModal() {
   const { user } = useAuth();
   const nome = user?.name || "Administrador(a)";
   const email = user?.email || "admin@passabola.com";
   const isAdmin = user?.role === "admin" || user?.isAdmin;
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="rounded-xl bg-violet-600 text-white px-4 py-2 font-bold"
+      >
+        Abrir Perfil Admin
+      </button>
+
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <h1 className="text-2xl font-bold text-gray-900 mb-2">
           Painel Administrativo
         </h1>
@@ -100,7 +110,7 @@ export default function PerfilADM() {
             </div>
           </div>
         </section>
-      </main>
-    </div>
+      </Modal>
+    </>
   );
 }

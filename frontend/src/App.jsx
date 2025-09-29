@@ -10,7 +10,7 @@ import {
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
-// Páginas
+// Páginas principais
 import Home from "./pages/Home";
 import PerfilADM from "./pages/PerfilADM";
 import EventosLista from "./pages/EventosLista";
@@ -22,11 +22,19 @@ import EventoDetalhes from "./pages/EventoDetalhes";
 import Voluntarios from "./pages/Voluntarios";
 import Doacao from "./pages/Doacao";
 import Camisa10 from "./pages/Camisa10";
-import CartPage from "./pages/CartPage"; // nova página do carrinho
+import CartPage from "./pages/CartPage";
+
+// Páginas de voluntários
+import QueroSer from "./pages/Voluntarios/QueroSer";
+import Oportunidades from "./pages/Voluntarios/Oportunidades";
+import Historias from "./pages/Voluntarios/Historias";
+import ComoFunciona from "./pages/Voluntarios/ComoFunciona";
+import FAQ from "./pages/Voluntarios/FAQ";
+import Contato from "./pages/Voluntarios/Contato";
 
 // Contextos e rotas protegidas
 import { AuthProvider } from "./components/contexts/AuthContext";
-import { CartProvider } from "./components/contexts/CartContext"; // contexto do carrinho
+import { CartProvider } from "./components/contexts/CartContext";
 import AdminRoute from "./components/routes/AdminRoute";
 import Login from "./components/Login";
 import ProfileRedirect from "./components/ProfileRedirect";
@@ -45,11 +53,12 @@ function ScrollToTop() {
 export default function App() {
   return (
     <AuthProvider>
-      <CartProvider> {/* Contexto do carrinho disponível na app inteira */}
+      <CartProvider>
         <Router>
           <ScrollToTop />
-          <Navbar />       
+          <Navbar />
           <Routes>
+            {/* Rotas principais */}
             <Route path="/" element={<Home />} />
             <Route path="/perfil" element={<ProfileRedirect />} />
             <Route path="/perfiladm" element={<PerfilADM />} />
@@ -61,9 +70,17 @@ export default function App() {
             <Route path="/doacao" element={<Doacao />} />
             <Route path="/login" element={<Login />} />
             <Route path="/camisa10" element={<Camisa10 />} />
-            <Route path="/carrinho" element={<CartPage />} /> {/* Rota do carrinho */}
+            <Route path="/carrinho" element={<CartPage />} />
 
-            {/* Rotas protegidas para admin */}
+            {/* Rotas voluntários */}
+            <Route path="/voluntarios/quero-ser" element={<QueroSer />} />
+            <Route path="/voluntarios/oportunidades" element={<Oportunidades />} />
+            <Route path="/voluntarios/historias" element={<Historias />} />
+            <Route path="/voluntarios/como-funciona" element={<ComoFunciona />} />
+            <Route path="/voluntarios/faq" element={<FAQ />} />
+            <Route path="/voluntarios/contato" element={<Contato />} />
+
+            {/* Rotas protegidas - admin */}
             <Route
               path="/admin"
               element={

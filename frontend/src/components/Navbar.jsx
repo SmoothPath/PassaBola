@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import { useCart } from "./contexts/CartContext";
+import DropDown from "../components/DropDown";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,20 +33,27 @@ export default function NavBar() {
   const linkActive = "text-[#7D1FA6] font-semibold underline";
 
   const MenuLinks = ({ vertical = false }) => (
-    <div className={`${vertical ? "flex flex-col gap-3" : "flex items-center gap-5"}`}>
-
+    <div
+      className={`${
+        vertical ? "flex flex-col gap-3" : "flex items-center gap-5"
+      }`}
+    >
       <NavLink
         to="/"
         onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Início
       </NavLink>
 
-       <NavLink
+      <NavLink
         to="/perfil"
         onClick={handlePerfilClick}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Perfil
       </NavLink>
@@ -53,7 +61,9 @@ export default function NavBar() {
       <NavLink
         to="/camisa10"
         onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Camisa 10
       </NavLink>
@@ -61,23 +71,41 @@ export default function NavBar() {
       <NavLink
         to="/jogajunto"
         onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Joga Junto
       </NavLink>
 
-      <NavLink
-        to="/voluntarios"
-        onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
-      >
-        Voluntários
-      </NavLink>
+      {/* DropDown para Voluntários */}
+      <DropDown
+        label="Voluntários"
+        items={[
+          { label: "Como Funciona", to: "/voluntarios/como-funciona" },
+          { label: "Quero Ser", to: "/voluntarios/quero-ser" },
+          { label: "Histórias", to: "/voluntarios/historias" },
+          { label: "Oportunidades", to: "/voluntarios/oportunidades" },
+        ]}
+      />
+
+      {/* DropDown para Eventos */}
+      <DropDown
+        label="Eventos"
+        items={[
+          { label: "Lista de Eventos", to: "/eventos/lista" },
+          { label: "Criar Novo", to: "/eventos/novo" },
+          { label: "Explorar", to: "/eventos/explorar" },
+          { label: "Meus Eventos", to: "/eventos/meus" },
+        ]}
+      />
 
       <NavLink
         to="/doacao"
         onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Doação
       </NavLink>
@@ -85,28 +113,32 @@ export default function NavBar() {
       <NavLink
         to="/parceiros"
         onClick={closeMenu}
-        className={({ isActive }) => `${linkBase} ${isActive ? linkActive : linkInactive}`}
+        className={({ isActive }) =>
+          `${linkBase} ${isActive ? linkActive : linkInactive}`
+        }
       >
         Parceiros
       </NavLink>
 
-  {/* Ícone do carrinho com emoji via código Unicode */}
-<button
-  onClick={() => {
-    closeMenu();
-    navigate("/carrinho");
-  }}
-  className="relative text-[#7D1FA6] hover:text-[#9124BF]"
-  aria-label={`Ir para o carrinho, ${cart.length} item${cart.length !== 1 ? "s" : ""}`}
->
-  {"\u{1F6D2}"} {/* ✅ Emoji de carrinho */}
+      {/* Ícone do carrinho */}
+      <button
+        onClick={() => {
+          closeMenu();
+          navigate("/carrinho");
+        }}
+        className="relative text-[#7D1FA6] hover:text-[#9124BF]"
+        aria-label={`Ir para o carrinho, ${cart.length} item${
+          cart.length !== 1 ? "s" : ""
+        }`}
+      >
+        {"\u{1F6D2}"}
+        {cart.length > 0 && (
+          <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
+            {cart.length}
+          </span>
+        )}
+      </button>
 
-  {cart.length > 0 && (
-    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
-      {cart.length}
-    </span>
-  )}
-</button>
       {/* Botão Entrar / Sair */}
       {user ? (
         <button
@@ -137,14 +169,21 @@ export default function NavBar() {
       aria-label="Barra de navegação principal"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-        {/* Logo e nome */}
-        <Link to="/" className="flex items-center gap-2" onClick={closeMenu} aria-label="Página inicial">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="flex items-center gap-2"
+          onClick={closeMenu}
+          aria-label="Página inicial"
+        >
           <img
             src="/assets/logo.jpg"
             alt="Passa a Bola"
             className="w-9 h-9 object-cover rounded-full border-2 border-[#7D1FA6]"
           />
-          <span className="text-[#7D1FA6] font-anton text-xl tracking-tight">Passa a Bola</span>
+          <span className="text-[#7D1FA6] font-anton text-xl tracking-tight">
+            Passa a Bola
+          </span>
         </Link>
 
         {/* Menu desktop */}
@@ -160,11 +199,26 @@ export default function NavBar() {
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
         >
-          <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <svg
+            className="h-6 w-6"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+          >
             {isOpen ? (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M6 18L18 6M6 6l12 12"
+              />
             ) : (
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
             )}
           </svg>
         </button>
