@@ -1,3 +1,4 @@
+// src/components/Login.jsx
 import React, { useState } from "react";
 import { useAuth } from "./contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -7,127 +8,174 @@ export default function LoginModal() {
   const navigate = useNavigate();
 
   const [modalOpen, setModalOpen] = useState(false);
+  const [isLogin, setIsLogin] = useState(true);
+  const [error, setError] = useState("");
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLogin, setIsLogin] = useState(true);
-  const [error, setError] = useState("");
+
+  const resetForm = () => {
+    setName("");
+    setEmail("");
+    setPassword("");
+    setError("");
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
     try {
-      let u;
+      let user;
       if (isLogin) {
-        u = await login(email, password);
+        user = await login(email, password);
       } else {
-        u = await register(name, email, password);
+        user = await register(name, email, password);
       }
+      updateUser(user);
 
-      updateUser(u);
-
-      setModalOpen(false); // fecha modal após login
-
-      if (u?.role === "admin" || u?.isAdmin) {
+      // se tiver lógica de redirecionamento por role
+      if (user?.role === "admin") {
         navigate("/perfiladm");
       } else {
-        const _done = getQuizStatus(u);
-        navigate("/perfil");
+        const quiz = await getQuizStatus?.(user?.id);
+        navigate(quiz?.done ? "/perfil" : "/");
       }
+
+      setModalOpen(false);
+      resetForm();
     } catch (err) {
-      console.error("Erro de autenticação:", err);
-      setError(err?.response?.data?.error || "Ocorreu um erro. Tente novamente.");
+      setError(err?.message || "Falha na autenticação");
     }
   };
 
   return (
     <>
+      {/* Botão para abrir o modal */}
       <button
+        type="button"
         onClick={() => setModalOpen(true)}
-        className="bg-pink-600 text-white px-5 py-2 rounded hover:bg-pink-700"
+        className="inline-flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold
+                   bg-violet-700 text-white shadow-sm hover:bg-violet-800 active:scale-[.99]
+                   transition"
       >
-        Entrar / Cadastrar
+        Entrar
       </button>
 
+      {/* Modal */}
       {modalOpen && (
-        <>
-          {/* Fundo escuro */}
+        <div
+          aria-modal="true"
+          role="dialog"
+          className="fixed inset-0 z-50 grid place-items-center p-4"
+        >
+          {/* backdrop */}
           <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setModalOpen(false)}
-            className="fixed inset-0 bg-black bg-opacity-50 z-40"
-          ></div>
+          />
+          {/* card */}
+          <div className="relative w-full max-w-md rounded-2xl bg-white shadow-2xl ring-1 ring-black/5">
+            {/* Header com tabs */}
+            <div className="flex">
+              <button
+                type="button"
+                onClick={() => setIsLogin(true)}
+                className={`w-1/2 py-3 text-sm font-semibold rounded-tl-2xl transition
+                  ${isLogin ? "bg-violet-700 text-white" : "bg-violet-50 text-violet-700 hover:bg-violet-100"}`}
+              >
+                Entrar
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsLogin(false)}
+                className={`w-1/2 py-3 text-sm font-semibold rounded-tr-2xl transition
+                  ${!isLogin ? "bg-violet-700 text-white" : "bg-violet-50 text-violet-700 hover:bg-violet-100"}`}
+              >
+                Cadastrar
+              </button>
+            </div>
 
-          {/* Modal */}
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-xl shadow-lg max-w-md w-full p-6 relative">
-              <h1 className="text-2xl font-bold mb-4">
-                {isLogin ? "Entrar" : "Criar conta"}
-              </h1>
-
-              {error && (
-                <div className="mb-4 p-3 rounded bg-red-100 text-red-700 text-sm">
-                  {error}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="p-6">
+              <div className="space-y-4">
                 {!isLogin && (
-                  <input
-                    type="text"
-                    placeholder="Nome"
-                    className="w-full border rounded px-3 py-2"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    required
-                  />
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Nome completo
+                    </label>
+                    <input
+                      type="text"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                      className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2
+                                 text-slate-800 outline-none focus:ring-4 focus:ring-violet-200"
+                      placeholder="Seu nome"
+                    />
+                  </div>
                 )}
 
-                <input
-                  type="email"
-                  placeholder="E-mail"
-                  className="w-full border rounded px-3 py-2"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    E-mail
+                  </label>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2
+                               text-slate-800 outline-none focus:ring-4 focus:ring-violet-200"
+                    placeholder="voce@email.com"
+                  />
+                </div>
 
-                <input
-                  type="password"
-                  placeholder="Senha"
-                  className="w-full border rounded px-3 py-2"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Senha
+                  </label>
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    className="block w-full rounded-xl border border-slate-200 bg-white px-3 py-2
+                               text-slate-800 outline-none focus:ring-4 focus:ring-violet-200"
+                    placeholder="••••••••"
+                  />
+                </div>
+
+                {error && (
+                  <p className="text-sm font-medium text-rose-600 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+                    {error}
+                  </p>
+                )}
 
                 <button
                   type="submit"
-                  className="w-full bg-pink-600 text-white py-2 rounded hover:bg-pink-700"
+                  className="w-full rounded-xl bg-gradient-to-r from-fuchsia-600 to-violet-700
+                             text-white font-semibold py-2.5 shadow-md hover:opacity-95 transition"
                 >
-                  {isLogin ? "Entrar" : "Cadastrar"}
+                  {isLogin ? "Entrar" : "Criar conta"}
                 </button>
-              </form>
+              </div>
+
+              <p className="mt-4 text-center text-xs text-slate-500">
+                Ao continuar, você concorda com nossos termos.
+              </p>
 
               <button
-                className="mt-4 text-sm text-blue-600 underline"
-                onClick={() => setIsLogin((s) => !s)}
-              >
-                {isLogin ? "Criar conta" : "Já tenho conta"}
-              </button>
-
-              {/* Botão fechar */}
-              <button
+                type="button"
                 onClick={() => setModalOpen(false)}
-                className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 font-bold text-xl"
-                aria-label="Fechar modal"
+                className="mt-6 w-full rounded-xl border border-slate-200 bg-white
+                           text-slate-700 py-2 hover:bg-slate-50 transition"
               >
-                &times;
+                Fechar
               </button>
-            </div>
+            </form>
           </div>
-        </>
+        </div>
       )}
     </>
   );

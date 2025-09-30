@@ -13,107 +13,118 @@ export default function Voluntarios() {
     },
     {
       titulo: "Ver oportunidades",
-      descricao: "Veja eventos que precisam de voluntários.",
+      descricao: "Eventos que precisam de voluntários.",
       link: "/voluntarios/oportunidades",
     },
     {
-      titulo: "Histórias de voluntários",
-      descricao: "Conheça quem já faz parte.",
-      link: "/voluntarios/historias",
-    },
-    {
-      titulo: "Como funciona?",
-      descricao: "Entenda como funciona o processo de voluntariado.",
+      titulo: "Como funciona",
+      descricao: "Entenda o fluxo do voluntariado.",
       link: "/voluntarios/como-funciona",
     },
     {
+      titulo: "Histórias",
+      descricao: "Relatos de quem já participou.",
+      link: "/voluntarios/historias",
+    },
+    {
       titulo: "Perguntas frequentes",
-      descricao: "Tire suas dúvidas sobre o voluntariado.",
+      descricao: "Tire suas dúvidas.",
       link: "/voluntarios/faq",
     },
     {
       titulo: "Fale com a equipe",
-      descricao: "Entre em contato com o time responsável.",
+      descricao: "Fale com o time responsável.",
       link: "/voluntarios/contato",
     },
   ];
 
   return (
-    <div className="px-4 py-8 text-center">
-      <button
-        onClick={() => window.history.back()}
-        aria-label="Voltar para a página anterior"
-        className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-md border-2 border-[#7D1FA6] bg-[#F9F7FC] text-[#3F1A73] font-semibold transition-colors hover:bg-[#7D1FA6] hover:text-white"
-      >
-        ← Voltar
-      </button>
-
-      <h1 className="mb-8 text-2xl font-semibold">Voluntários</h1>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        {opcoes.map((opcao, index) => (
-          <div
-            key={index}
-            className="bg-white border-2 border-[#F26D9E] rounded-xl p-6 shadow-md hover:shadow-lg hover:scale-[1.03] transition-transform text-left flex flex-col justify-between"
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-gradient-to-r from-fuchsia-600 to-violet-700 text-white">
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <button
+            onClick={() => window.history.back()}
+            aria-label="Voltar"
+            className="mb-4 inline-flex items-center gap-2 rounded-xl bg-white/10
+                       px-3 py-1.5 text-sm font-medium hover:bg-white/15"
           >
-            <h2 className="mb-2 text-lg font-bold text-[#3F1A73]">
-              {opcao.titulo}
-            </h2>
-            <p className="mb-4 text-sm text-[#333]">{opcao.descricao}</p>
+            ← Voltar
+          </button>
+          <h1 className="text-3xl font-extrabold tracking-tight">Voluntários</h1>
+          <p className="mt-2 text-white/90">
+            Construa impacto com a gente. Escolha uma opção:
+          </p>
+        </div>
+      </header>
 
-            {opcao.onClick ? (
-              <button
-                onClick={opcao.onClick}
-                className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors text-left"
-              >
-                Saiba mais
-              </button>
-            ) : (
-              <Link
-                to={opcao.link}
-                className="font-bold text-[#D95F80] hover:text-[#9124BF] transition-colors"
-              >
-                Saiba mais
-              </Link>
-            )}
-          </div>
-        ))}
-      </div>
+      <main className="mx-auto max-w-6xl px-4 py-10">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {opcoes.map((opcao, i) => (
+            <div
+              key={i}
+              className="group rounded-2xl border border-violet-200 bg-white p-5 shadow-sm
+                         hover:shadow-md transition relative overflow-hidden"
+            >
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-br
+                              from-fuchsia-50/0 to-violet-50/60 opacity-0 group-hover:opacity-100 transition" />
+              <h2 className="text-lg font-bold text-slate-900">{opcao.titulo}</h2>
+              <p className="mt-1 text-sm text-slate-600">{opcao.descricao}</p>
 
+              <div className="mt-4">
+                {opcao.onClick ? (
+                  <button
+                    onClick={opcao.onClick}
+                    className="text-violet-700 font-semibold hover:underline"
+                  >
+                    Saiba mais →
+                  </button>
+                ) : (
+                  <Link
+                    to={opcao.link}
+                    className="text-violet-700 font-semibold hover:underline"
+                  >
+                    Abrir →
+                  </Link>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+      </main>
+
+      {/* Modal “Quero me voluntariar” */}
       {showModal && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="bg-white rounded-xl p-6 max-w-md w-full shadow-lg relative"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-3 right-3 text-gray-600 hover:text-gray-900"
-              aria-label="Fechar modal"
-            >
-              &times;
-            </button>
-            <h2 className="text-xl font-bold mb-4">Quero me voluntariar</h2>
-            <p className="mb-4">
-              Obrigado pelo interesse em se voluntariar! Por favor, entre em
-              contato pelo email:{" "}
-              <a
-                href="mailto:voluntarios@exemplo.com"
-                className="text-purple-600 underline"
-              >
+        <div className="fixed inset-0 z-50 grid place-items-center p-4">
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+          <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-black/5">
+            <h3 className="text-xl font-extrabold text-slate-900">Como me tornar voluntária(o)?</h3>
+            <ol className="mt-3 space-y-2 text-sm text-slate-700 list-decimal list-inside">
+              <li>Crie/acesse sua conta.</li>
+              <li>Complete seu perfil e disponibilidade.</li>
+              <li>Escolha um evento com vagas e aplique.</li>
+              <li>Confirme presença e siga as instruções do time.</li>
+            </ol>
+            <p className="mt-4 text-sm text-slate-600">
+              Dúvidas? Envie e-mail para{" "}
+              <a href="mailto:voluntarios@exemplo.com" className="text-violet-700 underline">
                 voluntarios@exemplo.com
-              </a>{" "}
-              ou ligue para (11) 99999-9999.
+              </a>.
             </p>
-            <button
-              onClick={() => setShowModal(false)}
-              className="mt-4 rounded-xl bg-purple-700 text-white px-4 py-2 hover:bg-purple-800 transition"
-            >
-              Fechar
-            </button>
+            <div className="mt-6 flex justify-end gap-3">
+              <button
+                onClick={() => setShowModal(false)}
+                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-700 hover:bg-slate-50"
+              >
+                Fechar
+              </button>
+              <Link
+                to="/voluntarios/como-funciona"
+                className="rounded-xl bg-violet-700 px-4 py-2 font-semibold text-white hover:bg-violet-800"
+                onClick={() => setShowModal(false)}
+              >
+                Ver passo a passo
+              </Link>
+            </div>
           </div>
         </div>
       )}

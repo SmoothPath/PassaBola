@@ -11,153 +11,95 @@ export default function JogaJunto() {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-50">
-      {/* Navbar removido para evitar duplicação */}
+    <div className="min-h-screen bg-slate-50">
+      <header className="bg-gradient-to-r from-fuchsia-600 to-violet-700 text-white">
+        <div className="mx-auto max-w-6xl px-4 py-10">
+          <h1 className="text-3xl font-extrabold tracking-tight">Joga Junto</h1>
+          <p className="mt-2 text-white/90">
+            Sistema de engajamento da comunidade — pontuação, níveis e apostas.
+          </p>
+        </div>
+      </header>
 
-      {/* Conteúdo principal */}
-      <main className="flex-1 max-w-4xl mx-auto p-6 w-full">
-        <h1 className="text-3xl font-bold mb-2">JogaJunto</h1>
-        <p className="text-slate-600 mb-6">
-          Entenda como funciona o sistema de pontos, níveis e apostas do{" "}
-          <span className="font-semibold">Passa a Bola</span>.
-        </p>
-
-        {/* Navegação de abas */}
-        <div className="flex gap-3 mb-6">
+      <main className="mx-auto max-w-6xl px-4 py-8">
+        {/* Tabs */}
+        <div className="inline-flex rounded-2xl border border-violet-200 bg-white p-1 shadow-sm">
           {tabs.map((t) => (
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`px-4 py-2 rounded-lg border text-sm font-medium transition ${
-                tab === t.id
-                  ? "bg-slate-900 text-white"
-                  : "bg-white text-slate-700 hover:bg-slate-100"
-              }`}
-              aria-selected={tab === t.id}
-              role="tab"
-              id={`tab-${t.id}`}
-              aria-controls={`tabpanel-${t.id}`}
-              tabIndex={tab === t.id ? 0 : -1}
+              className={`px-4 py-2 text-sm font-semibold rounded-xl transition
+                ${tab === t.id
+                  ? "bg-violet-700 text-white"
+                  : "text-violet-700 hover:bg-violet-50"}`}
             >
               {t.label}
             </button>
           ))}
         </div>
 
-        {/* Conteúdo da aba */}
-        <section
-          id={`tabpanel-${tab}`}
-          role="tabpanel"
-          aria-labelledby={`tab-${tab}`}
-          className="bg-white rounded-xl shadow-sm border p-6"
-        >
+        {/* Conteúdos */}
+        <section className="mt-8 grid gap-6">
           {tab === "pontuacao" && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Sistema de Pontuação</h2>
-              <p className="text-slate-700 mb-4">
-                Ao se cadastrar na plataforma e completar o quiz, as jogadoras{" "}
-                <span className="font-medium">ganham pontos iniciais</span>. Ao
-                interagir com as redes sociais e conteúdos do Passa a Bola (como
-                Instagram, vídeos do YouTube e podcast Fala Bebê), elas{" "}
-                <span className="font-medium">ganham pontos extras</span>. Ao
-                faltar nos jogos, elas <span className="font-medium">perdem pontos</span>.
-              </p>
-
-              <div className="grid md:grid-cols-2 gap-6">
-                <div>
-                  <h3 className="font-semibold mb-2">Como ganhar pontos:</h3>
-                  <ul className="list-disc list-inside text-slate-700 space-y-1 text-sm">
-                    <li>Cadastro e conclusão do quiz inicial.</li>
-                    <li>
-                      Interação com redes sociais (Instagram, YouTube, podcast
-                      Fala Bebê) — enviar print/foto na plataforma.
-                    </li>
-                    <li>Participar de eventos e lives do Passa a Bola.</li>
-                    <li>Convidar amigas para a plataforma.</li>
-                  </ul>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Como perder pontos:</h3>
-                  <ul className="list-disc list-inside text-slate-700 space-y-1 text-sm">
-                    <li>Faltar em jogos sem justificativa.</li>
-                    <li>Comportamento antiético ou violar regras da comunidade.</li>
-                    <li>Fraudes nas interações (prints ou fotos falsas).</li>
-                  </ul>
-                </div>
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h2 className="text-lg font-bold text-slate-900">
+                  Como você ganha pontos
+                </h2>
+                <ul className="mt-3 space-y-2 text-sm text-slate-700">
+                  <li>• Presença nos jogos e eventos</li>
+                  <li>• Participação em quizzes / lives</li>
+                  <li>• Voluntariar em eventos</li>
+                  <li>• Convidar amigas (comprovado no app)</li>
+                </ul>
               </div>
 
-              <p className="mt-4 text-slate-700 text-sm">
-                As inscrições em campeonatos seguem prioridade:{" "}
-                <span className="font-medium">nível Ouro</span> tem acesso
-                primeiro, depois <span className="font-medium">nível Prata</span> e
-                por último <span className="font-medium">nível Bronze</span>.
-              </p>
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 className="text-lg font-bold text-slate-900">Regras</h3>
+                <p className="mt-2 text-sm text-slate-700">
+                  Pontos são validados pela presença/atividade registrada. Há auditorias para evitar abuso.
+                </p>
+              </div>
             </div>
           )}
 
           {tab === "niveis" && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Sistema de Níveis</h2>
-              <p className="text-slate-700 mb-4">
-                O acúmulo de pontos coloca as jogadoras em diferentes níveis.
-                Esses níveis oferecem benefícios exclusivos dentro da
-                plataforma.
-              </p>
-
-              <div className="grid md:grid-cols-3 gap-4">
-                <div className="p-4 border rounded-lg bg-yellow-50">
-                  <h3 className="font-bold text-yellow-600 mb-2">Ouro</h3>
-                  <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
-                    <li>Prioridade máxima nas inscrições.</li>
-                    <li>Acesso antecipado a eventos exclusivos.</li>
-                    <li>Maior valorização em apostas.</li>
-                  </ul>
-                </div>
-
-                <div className="p-4 border rounded-lg bg-gray-50">
-                  <h3 className="font-bold text-gray-600 mb-2">Prata</h3>
-                  <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
-                    <li>Prioridade média nas inscrições.</li>
-                    <li>Acesso parcial a eventos especiais.</li>
-                    <li>Bônus em interações sociais.</li>
-                  </ul>
-                </div>
-
-                <div className="p-4 border rounded-lg bg-orange-50">
-                  <h3 className="font-bold text-orange-600 mb-2">Bronze</h3>
-                  <ul className="list-disc list-inside text-sm text-slate-700 space-y-1">
-                    <li>Acesso regular às inscrições.</li>
-                    <li>Possibilidade de subir com mais interações.</li>
-                    <li>Apostas disponíveis, mas com retorno menor.</li>
-                  </ul>
-                </div>
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-slate-900">Níveis</h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {[
+                  { t: "Starter", p: "0–99", b: "Acesso básico" },
+                  { t: "Playmaker", p: "100–299", b: "Fila preferencial" },
+                  { t: "Capitã", p: "300–599", b: "Brinde exclusivo" },
+                  { t: "Lenda", p: "600+", b: "Ingresso VIP / meet" },
+                ].map((n) => (
+                  <div
+                    key={n.t}
+                    className="rounded-xl border border-violet-200 bg-violet-50/50 p-4"
+                  >
+                    <p className="text-sm font-semibold text-violet-700">{n.t}</p>
+                    <p className="text-2xl font-extrabold text-violet-800">{n.p}</p>
+                    <p className="text-sm text-slate-700">{n.b}</p>
+                  </div>
+                ))}
               </div>
             </div>
           )}
 
           {tab === "apostas" && (
-            <div>
-              <h2 className="text-xl font-semibold mb-4">Sistema de Apostas</h2>
-              <p className="text-slate-700 mb-4">
-                O <span className="font-semibold">JogaJunto</span> também permite que jogadoras usem seus pontos para{" "}
-                <span className="font-medium">apostar em jogos</span>. Dessa forma, é possível multiplicar a pontuação e subir de nível mais rápido.
+            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+              <h2 className="text-lg font-bold text-slate-900">Apostas (experimento)</h2>
+              <p className="mt-2 text-sm text-slate-700">
+                Ex.: aposte até 10 pts em “comparecer no próximo treino”. Se cumprir, dobra;
+                se não, perde os pontos. Transparente e vinculado à presença real.
               </p>
-              <ul className="list-disc list-inside text-slate-700 space-y-2 text-sm">
-                <li>Apostar em jogos da comunidade para tentar aumentar os pontos.</li>
-                <li>Jogadoras de nível Ouro têm chances maiores de retorno em suas apostas.</li>
-                <li>Jogadoras de nível Bronze ainda podem apostar, mas com ganhos menores.</li>
-              </ul>
-
-              <p className="mt-4 text-slate-600 text-sm italic">
-                *O sistema de apostas é pensado como forma de engajamento saudável, sempre vinculado à participação nos jogos e conteúdos da comunidade.
+              <p className="mt-4 text-xs text-slate-500 italic">
+                *A mecânica é opcional e passa por testes de segurança/ética.
               </p>
             </div>
           )}
         </section>
       </main>
-
-      {/* Footer removido para evitar duplicação */}
     </div>
   );
 }
