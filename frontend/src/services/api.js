@@ -6,9 +6,6 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
 });
 
-VITE_API_URL= "https://passabola-api.onrender.com/api" ;
-
-
 // Interceptar para anexar o token automaticamente em cada request
 
 api.interceptors.request.use((config) => {
