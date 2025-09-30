@@ -2,47 +2,45 @@
 const express = require('express');
 const cors = require('cors');
 
-// importa os routers
 const { router: authRoutes } = require('./routes/auth');
 const { router: eventosRoutes } = require('./routes/eventos');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
-app.use(express.json());
-app.use(cors({
-    origin: [
-      'https://passa-bola-8d13.vercel.app',
-      'http://localhost:3000',             
-      'http://localhost:5173'               
-  ], 
+// CORS
 
-  credentials: true
-}));
+const allowed = [
+  'https://passa-bola-8d13.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3000'
+];
+
+const corsOpts = {
+  origin(origin, cb) {
+    if (!origin) return cb(null, true);
+    return allowed.includes(origin) ? cb(null, true) : cb(new Error('Not allowed by CORS'));
+  },
+  credentials: true,
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization']
+};
+
+app.use(cors(corsOpts));
+app.options('*', cors(corsOpts)); // responde preflight
 
 
 // Rotas
 app.use('/api/auth', authRoutes);
-app.use('/api/eventos', eventosRoutes); // ⬅️ agora plugado corretamente
+app.use('/api/eventos', eventosRoutes);
 
-// Rota padrão
+// Health/padrão
 app.get('/', (req, res) => {
   res.json({ message: 'API do Passa a Bola funcionando!' });
 });
+app.get('/healthz', (req, res) => res.send('ok'));
 
-// Iniciar servidor
+// Iniciar servidor (Render)
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-// Exporta p/ serverless (Vercel)
-module.exports = app;
-
-// Só escuta porta em ambiente local (npm run dev)
-if (require.main === module) {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
-  });
-}

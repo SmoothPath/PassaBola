@@ -14,18 +14,9 @@
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-<<<<<<< HEAD
-    "jsonwebtoken": "^9.0.2",
-    "recharts": "^3.2.1",
-    "serverless-http": "^3.2.0"
-  },
-  "engines": {
-    "node": "18.x"
-=======
     "jsonwebtoken": "^9.0.2"
   },
   "engines": {
     "node": "22.x"
->>>>>>> 2cea7e1a42e1b68ad5879bb861b6dbfaa8642dbe
   }
 }
