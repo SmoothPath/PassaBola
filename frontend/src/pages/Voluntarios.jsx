@@ -1,15 +1,13 @@
 // src/pages/Voluntarios.jsx
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 export default function Voluntarios() {
-  const [showModal, setShowModal] = useState(false);
-
   const opcoes = [
     {
       titulo: "Quero me voluntariar",
       descricao: "Veja como se tornar um voluntário.",
-      onClick: () => setShowModal(true),
+      link: "/voluntarios/quero-me-voluntariar",
     },
     {
       titulo: "Ver oportunidades",
@@ -60,74 +58,23 @@ export default function Voluntarios() {
       <main className="mx-auto max-w-6xl px-4 py-10">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {opcoes.map((opcao, i) => (
-            <div
+            <Link
               key={i}
+              to={opcao.link}
               className="group rounded-2xl border border-violet-200 bg-white p-5 shadow-sm
-                         hover:shadow-md transition relative overflow-hidden"
+                         hover:shadow-md transition relative overflow-hidden block"
             >
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-br
                               from-fuchsia-50/0 to-violet-50/60 opacity-0 group-hover:opacity-100 transition" />
               <h2 className="text-lg font-bold text-slate-900">{opcao.titulo}</h2>
               <p className="mt-1 text-sm text-slate-600">{opcao.descricao}</p>
-
-              <div className="mt-4">
-                {opcao.onClick ? (
-                  <button
-                    onClick={opcao.onClick}
-                    className="text-violet-700 font-semibold hover:underline"
-                  >
-                    Saiba mais →
-                  </button>
-                ) : (
-                  <Link
-                    to={opcao.link}
-                    className="text-violet-700 font-semibold hover:underline"
-                  >
-                    Abrir →
-                  </Link>
-                )}
+              <div className="mt-4 text-violet-700 font-semibold hover:underline">
+                Abrir →
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </main>
-
-      {/* Modal “Quero me voluntariar” */}
-      {showModal && (
-        <div className="fixed inset-0 z-50 grid place-items-center p-4">
-          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setShowModal(false)} />
-          <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl ring-1 ring-black/5">
-            <h3 className="text-xl font-extrabold text-slate-900">Como me tornar voluntária(o)?</h3>
-            <ol className="mt-3 space-y-2 text-sm text-slate-700 list-decimal list-inside">
-              <li>Crie/acesse sua conta.</li>
-              <li>Complete seu perfil e disponibilidade.</li>
-              <li>Escolha um evento com vagas e aplique.</li>
-              <li>Confirme presença e siga as instruções do time.</li>
-            </ol>
-            <p className="mt-4 text-sm text-slate-600">
-              Dúvidas? Envie e-mail para{" "}
-              <a href="mailto:voluntarios@exemplo.com" className="text-violet-700 underline">
-                voluntarios@exemplo.com
-              </a>.
-            </p>
-            <div className="mt-6 flex justify-end gap-3">
-              <button
-                onClick={() => setShowModal(false)}
-                className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-slate-700 hover:bg-slate-50"
-              >
-                Fechar
-              </button>
-              <Link
-                to="/voluntarios/como-funciona"
-                className="rounded-xl bg-violet-700 px-4 py-2 font-semibold text-white hover:bg-violet-800"
-                onClick={() => setShowModal(false)}
-              >
-                Ver passo a passo
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

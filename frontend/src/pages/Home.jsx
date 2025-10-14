@@ -1,11 +1,13 @@
 import React from "react";
 import Login from "../components/Login";
 import Sobre from "../components/Sobre";
+import Noticias from "../components/Noticias"; // Importa o componente de notícias
 
 const Home = () => {
   return (
     <div className="bg-gray-50 min-h-screen flex flex-col">
       <main className="flex-grow">
+        {/* Seção de boas-vindas com vídeo */}
         <section
           id="home"
           className="relative flex items-center justify-start px-6 sm:px-12"
@@ -52,7 +54,13 @@ const Home = () => {
           </div>
         </section>
 
+        {/* Seção Sobre */}
         <Sobre />
+
+        {/* Seção de Notícias Esportivas */}
+        <Noticias />
+
+        {/* Seção de Login */}
         <Login />
       </main>
     </div>
