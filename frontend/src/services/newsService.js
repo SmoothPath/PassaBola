@@ -5,13 +5,15 @@ const BASE_URL = "https://newsapi.org/v2";
 
 export const getSportsNews = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/top-headlines?country=us&apiKey=${API_KEY}`, {
+    const response = await axios.get(`${BASE_URL}/everything`, {
       params: {
-        category: "sports",
-        country: "br",
-        // apiKey: API_KEY,
+        q: "futebol feminino",
+        language: "pt",
+        sortBy: "publishedAt",
+        apiKey: API_KEY
       },
     });
+
     return response.data.articles;
   } catch (error) {
     console.error("Erro ao buscar notícias:", error.response || error.message);

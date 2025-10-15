@@ -1,5 +1,4 @@
 import React from "react";
-import Login from "../components/Login";
 import Sobre from "../components/Sobre";
 import Noticias from "../components/Noticias"; // Importa o componente de notícias
 
@@ -27,9 +26,9 @@ const Home = () => {
           />
 
           {/* Overlay gradiente */}
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-          {/* Container do texto */}
+          {/* Texto sobreposto */}
           <div
             className="relative z-20 max-w-xl p-6 sm:p-8 rounded-lg text-white text-left shadow-lg"
             role="region"
@@ -57,10 +56,10 @@ const Home = () => {
         {/* Seção Sobre */}
         <Sobre />
 
-        {/* Seção de Notícias Esportivas */}
+        {/* Seção de Notícias de Futebol Feminino */}
         <Noticias />
 
-        {/* Seção de Login */}
+        {/* Seção de Login (comentada) */}
         {/* <Login /> */}
       </main>
     </div>

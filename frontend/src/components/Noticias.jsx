@@ -28,8 +28,23 @@ const Noticias = () => {
     const fetchData = async () => {
       try {
         const data = await getSportsNews();
-        if (data.length === 0) setErro(true);
-        setNoticias(data);
+
+        // ✅ Filtrar apenas notícias relacionadas ao futebol feminino
+        const filtradas = data.filter((noticia) => {
+          const titulo = noticia.title?.toLowerCase() || "";
+          const descricao = noticia.description?.toLowerCase() || "";
+          return (
+            titulo.includes("futebol feminino") ||
+            titulo.includes("women") ||
+            titulo.includes("feminino") ||
+            descricao.includes("futebol feminino") ||
+            descricao.includes("women's football") ||
+            descricao.includes("feminino")
+          );
+        });
+
+        if (filtradas.length === 0) setErro(true);
+        setNoticias(filtradas);
       } catch (error) {
         setErro(true);
       }
@@ -58,17 +73,17 @@ const Noticias = () => {
             style={{
               backgroundImage:
                 "linear-gradient(90deg, #7D1FA6, #B97FC9, #7D1FA6)",
-              fontFamily: "'Poppins', sans-serif", // Aqui você pode trocar para 'Anton', sans-serif
+              fontFamily: "'Poppins', sans-serif",
             }}
           >
-            Últimas Notícias Esportivas
+            Últimas Notícias de Futebol Feminino
           </h2>
         </div>
         <div className="w-16 h-1 mb-3 rounded-full bg-gradient-to-r from-[#7D1FA6] via-[#B97FC9] to-[#7D1FA6]" />
 
         {erro ? (
           <p className="text-red-500 font-medium">
-            Não foi possível carregar as notícias. Tente novamente mais tarde.
+            Não foi possível carregar notícias de futebol feminino. Tente novamente mais tarde.
           </p>
         ) : noticias.length === 0 ? (
           <p>Carregando notícias...</p>
