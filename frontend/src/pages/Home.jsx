@@ -61,7 +61,7 @@ const Home = () => {
         <Noticias />
 
         {/* Seção de Login */}
-        <Login />
+        {/* <Login /> */}
       </main>
     </div>
   );

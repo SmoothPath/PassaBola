@@ -3,23 +3,15 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "./contexts/AuthContext";
 import { useCart } from "./contexts/CartContext";
 import DropDown from "../components/DropDown";
+import Login from "./Login";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-
-  // Garantindo que cart seja um array mesmo que undefined
   const { cart = [] } = useCart() || {};
 
   const closeMenu = () => setIsOpen(false);
-
-  const handlePerfilClick = () => {
-    closeMenu();
-    if (!user) navigate("/login");
-    else if (user.role === "admin") navigate("/perfiladm");
-    else navigate("/perfil");
-  };
 
   const handleLogout = () => {
     logout();
@@ -49,16 +41,6 @@ export default function NavBar() {
       </NavLink>
 
       <NavLink
-        to="/perfil"
-        onClick={handlePerfilClick}
-        className={({ isActive }) =>
-          `${linkBase} ${isActive ? linkActive : linkInactive}`
-        }
-      >
-        Perfil
-      </NavLink>
-
-      <NavLink
         to="/camisa10"
         onClick={closeMenu}
         className={({ isActive }) =>
@@ -78,7 +60,6 @@ export default function NavBar() {
         Joga Junto
       </NavLink>
 
-      {/* DropDown para Voluntários */}
       <DropDown
         label="Voluntários"
         items={[
@@ -89,7 +70,6 @@ export default function NavBar() {
         ]}
       />
 
-      {/* DropDown para Eventos */}
       <DropDown
         label="Eventos"
         items={[
@@ -120,7 +100,7 @@ export default function NavBar() {
         Parceiros
       </NavLink>
 
-      {/* Ícone do carrinho */}
+      {/* Carrinho */}
       <button
         onClick={() => {
           closeMenu();
@@ -139,26 +119,24 @@ export default function NavBar() {
         )}
       </button>
 
-      {/* Botão Entrar / Sair */}
+      {/* Entrar / Login */}
       {user ? (
-        <button
-          onClick={handleLogout}
-          className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
-          aria-label="Sair da conta"
-        >
-          Sair
-        </button>
+        <DropDown
+          label="Entrar"
+          items={[
+            {
+              label: "Perfil",
+              to: user.role === "admin" ? "/perfiladm" : "/perfil",
+            },
+            {
+              label: "Sair",
+              onClick: handleLogout,
+            },
+          ]}
+          customButton="rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
+        />
       ) : (
-        <button
-          onClick={() => {
-            closeMenu();
-            navigate("/login");
-          }}
-          className="ml-1 rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
-          aria-label="Entrar na conta"
-        >
-          Entrar
-        </button>
+        <Login />
       )}
     </div>
   );
