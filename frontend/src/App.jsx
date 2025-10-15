@@ -23,6 +23,7 @@ import Voluntarios from "./pages/Voluntarios";
 import Doacao from "./pages/Doacao";
 import Camisa10 from "./pages/Camisa10";
 import CartPage from "./pages/CartPage";
+import Parceiros from "./pages/Parceiros";
 
 // Páginas de voluntários
 import QueroSer from "./pages/Voluntarios/QueroSer";
@@ -71,6 +72,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/camisa10" element={<Camisa10 />} />
             <Route path="/carrinho" element={<CartPage />} />
+             <Route path="/parceiros" element={<Parceiros/>} />
 
             {/* Rotas voluntários */}
             <Route path="/voluntarios/quero-ser" element={<QueroSer />} />
