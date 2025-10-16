@@ -1,19 +1,27 @@
 // vite.config.js
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite'
-
+import tailwindcss from '@tailwindcss/vite';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(),tailwindcss()],
+  plugins: [react(), tailwindcss()],
   server: {
-    port: 3000,         // Você pode mudar a porta se quiser
-    open: true          // Abre o navegador automaticamente
+    port: 3000,
+    open: true,
+    proxy: {
+      // Tudo que começar com /api/tsdb/ vai para TheSportsDB
+      '/api/tsdb/': {
+        target: 'https://www.thesportsdb.com/api/v1/json/3',
+        changeOrigin: true,
+        secure: true,
+        rewrite: (path) => path.replace(/^\/api\/tsdb\//, '/'),
+      },
+    },
   },
   resolve: {
     alias: {
-      '@': '/src'       // Permite importar arquivos usando @ (ex: import x from '@/pages/App')
-    }
-  }
+      '@': '/src',
+    },
+  },
 });
