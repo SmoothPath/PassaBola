@@ -5,6 +5,7 @@ const cors = require('cors');
 // importa os routers
 const { router: authRoutes } = require('./routes/auth');
 const { router: eventosRoutes } = require('./routes/eventos');
+const {router: sthRoutes} = require('./routes/sthRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -16,6 +17,7 @@ app.use(cors());
 // Rotas
 app.use('/api/auth', authRoutes);
 app.use('/api/eventos', eventosRoutes); 
+app.use('/api/dados', sthRoutes);
 
 // Rota padrão
 app.get('/', (req, res) => {

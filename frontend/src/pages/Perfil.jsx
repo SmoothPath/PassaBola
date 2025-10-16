@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import MonitoraJogadora from "../components/MonitoraJogadora";
 
 // Perguntas do quiz
 const quizQuestions = [
@@ -103,6 +104,8 @@ useEffect(() => {
       : answers;
 
   const currentPoints = (localUser?.points ?? user?.points ?? 0);
+
+  const [showGrafico, setShowGrafico] = useState(false); //Variáveis de controle de exibição do gráfico 
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -228,6 +231,18 @@ useEffect(() => {
                 Explorar eventos
               </button>
             </div>
+            <div className="max-w-5xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">Perfil da Jogadora</h1>
+
+      <button
+        onClick={() => setShowGrafico(!showGrafico)}
+        className="mb-4 px-4 py-2 rounded-xl bg-violet-700 text-white hover:bg-violet-800 transition"
+      >
+        {showGrafico ? "Esconder gráfico" : "Mostrar gráfico"}
+      </button>
+
+      {showGrafico && <MonitoraJogadora />}
+    </div>
           </>
         )}
       </main>
