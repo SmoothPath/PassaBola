@@ -8,17 +8,20 @@ export default function Historias() {
       tag: "Recepção",
       texto:
         "Comecei na recepção e hoje coordeno um time de 12 voluntárias. Foi transformador!",
+      foto: "https://randomuser.me/api/portraits/women/44.jpg",
     },
     {
       nome: "Ana Paula",
       tag: "Produção",
       texto:
         "Descobri que amo produção. Aprendi muito e agora trabalho com eventos esportivos.",
+      foto: "https://randomuser.me/api/portraits/women/65.jpg",
     },
     {
       nome: "Letícia Souza",
       tag: "Mídias",
       texto: "Fotografar os jogos me abriu portas e um portfólio incrível.",
+      foto: "https://randomuser.me/api/portraits/women/68.jpg",
     },
   ];
 
@@ -50,11 +53,18 @@ export default function Historias() {
               key={i}
               className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md"
             >
-              <div className="flex items-center justify-between">
-                <h3 className="text-lg font-bold text-slate-900">{s.nome}</h3>
-                <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
-                  {s.tag}
-                </span>
+              <div className="flex items-center gap-3">
+                <img
+                  src={s.foto}
+                  alt={s.nome}
+                  className="h-10 w-10 rounded-full object-cover shadow-sm"
+                />
+                <div className="flex items-center justify-between w-full">
+                  <h3 className="text-lg font-bold text-slate-900">{s.nome}</h3>
+                  <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-700">
+                    {s.tag}
+                  </span>
+                </div>
               </div>
               <p className="mt-4 text-sm text-slate-700 italic">“{s.texto}”</p>
             </article>
