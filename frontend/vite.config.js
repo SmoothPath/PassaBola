@@ -14,7 +14,7 @@ export default defineConfig({
       '/api/tsdb/': {
         target: 'https://www.thesportsdb.com/api/v1/json/3',
         changeOrigin: true,
-        secure: true,
+        secure: false,
         rewrite: (path) => path.replace(/^\/api\/tsdb\//, '/'),
       },
     },
