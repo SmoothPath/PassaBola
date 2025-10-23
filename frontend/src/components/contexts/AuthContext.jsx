@@ -1,6 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import api from '../../services/api';
 
+// Contexto
 export const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
 
@@ -16,7 +17,12 @@ export const AuthProvider = ({ children }) => {
     if (token && savedUser) {
       api.defaults.headers.Authorization = `Bearer ${token}`;
       try {
-        setUser(JSON.parse(savedUser));
+        const parsedUser = JSON.parse(savedUser);
+
+        // Garantir que exista a propriedade isAdmin para o AdminRoute
+        if (parsedUser.role === 'admin') parsedUser.isAdmin = true;
+
+        setUser(parsedUser);
       } catch {
         setUser(null);
       }
@@ -28,6 +34,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     const res = await api.post('/auth/login', { email, password });
     const { token, user: u } = res.data;
+
+    // Ajusta isAdmin para admin
+    if (u.role === 'admin') u.isAdmin = true;
 
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(u));
@@ -42,6 +51,9 @@ export const AuthProvider = ({ children }) => {
     const res = await api.post('/auth/register', { name, email, password });
     const { token, user: u } = res.data;
 
+    // Ajusta isAdmin (normalmente false para registros normais)
+    if (u.role === 'admin') u.isAdmin = true;
+
     localStorage.setItem('token', token);
     localStorage.setItem('user', JSON.stringify(u));
     api.defaults.headers.Authorization = `Bearer ${token}`;
@@ -52,6 +64,7 @@ export const AuthProvider = ({ children }) => {
 
   // Atualiza user global + localStorage
   const updateUser = (updatedUser) => {
+    if (updatedUser.role === 'admin') updatedUser.isAdmin = true;
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };

@@ -58,11 +58,11 @@ export default function App() {
         <Router>
           <ScrollToTop />
           <Navbar />
+
           <Routes>
             {/* Rotas principais */}
             <Route path="/" element={<Home />} />
             <Route path="/perfil" element={<ProfileRedirect />} />
-            <Route path="/perfiladm" element={<PerfilADM />} />
             <Route path="/eventos/meus/inscritos" element={<MeusEventos />} />
             <Route path="/eventos/:id" element={<EventoDetalhes />} />
             <Route path="/eventos" element={<ExplorarEventos />} />
@@ -72,7 +72,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/camisa10" element={<Camisa10 />} />
             <Route path="/carrinho" element={<CartPage />} />
-             <Route path="/parceiros" element={<Parceiros/>} />
+            <Route path="/parceiros" element={<Parceiros />} />
 
             {/* Rotas voluntários */}
             <Route path="/voluntarios/quero-ser" element={<QueroSer />} />
@@ -84,7 +84,7 @@ export default function App() {
 
             {/* Rotas protegidas - admin */}
             <Route
-              path="/admin"
+              path="/admin/perfil"
               element={
                 <AdminRoute>
                   <PerfilADM />
@@ -111,9 +111,14 @@ export default function App() {
             {/* Página 404 */}
             <Route
               path="*"
-              element={<div style={{ padding: 24 }}>Página não encontrada</div>}
+              element={
+                <div style={{ padding: 24, textAlign: "center" }}>
+                  Página não encontrada
+                </div>
+              }
             />
           </Routes>
+
           <Footer />
         </Router>
       </CartProvider>

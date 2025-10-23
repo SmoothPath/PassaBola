@@ -119,14 +119,18 @@ export default function NavBar() {
         )}
       </button>
 
-      {/* Entrar / Login */}
+      {/* Entrar / Perfil do usuário */}
       {user ? (
         <DropDown
           label="Entrar"
           items={[
             {
               label: "Perfil",
-              to: user.role === "admin" ? "/perfiladm" : "/perfil",
+              onClick: () => {
+                closeMenu();
+                // Redireciona para admin ou perfil normal
+                navigate(user.isAdmin ? "/admin/perfil" : "/perfil");
+              },
             },
             {
               label: "Sair",
