@@ -73,9 +73,9 @@ export default function NavBar() {
       <DropDown
         label="Eventos"
         items={[
-          { label: "Lista de Eventos", to: "/eventos/lista" },
-          { label: "Criar Novo", to: "/eventos/novo" },
-          { label: "Explorar", to: "/eventos/explorar" },
+          // { label: "Lista de Eventos", to: "/eventos" },
+          { label: "Criar Novo", to: "admin/eventos/novo" },
+          { label: "Explorar", to: "/eventos" },
           { label: "Meus Eventos", to: "/eventos/meus" },
         ]}
       />

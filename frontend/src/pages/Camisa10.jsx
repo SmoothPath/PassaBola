@@ -1,7 +1,8 @@
 import React from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useCart } from "../components/contexts/CartContext";
-import { ShoppingCart, Shirt } from "lucide-react"; // ← Ícones importados
+import { ShoppingCart, Shirt, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom"; // Para navegação
 
 const produtos = [
   { id: 1, nome: "Camisa 10 - Passa a Bola", imagem: "/assets/camisa10.jpg", preco: 120.0 },
@@ -14,58 +15,70 @@ const produtos = [
 
 export default function Camisa10() {
   const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   return (
     <PageWrapper>
-      <div className="relative bg-gradient-to-br from-purple-100 via-white to-purple-50 min-h-screen py-12">
+      <div className="relative bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen py-16">
+        {/* Botão de voltar */}
+        <div className="max-w-6xl mx-auto px-6 mb-8">
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-2 text-purple-700 font-semibold px-4 py-2 rounded-lg border border-purple-300 hover:bg-purple-100 transition-all duration-300"
+          >
+            <ArrowLeft className="w-5 h-5" strokeWidth={2.2} />
+            Voltar
+          </button>
+        </div>
+
         {/* Cabeçalho elegante */}
-        <div className="flex flex-col items-center mb-12">
+        <div className="flex flex-col items-center mb-12 px-6">
           <div className="flex items-center space-x-3 mb-3">
             <Shirt className="w-10 h-10 text-purple-700" strokeWidth={2.5} />
-            <h1 className="text-4xl font-extrabold text-purple-900 tracking-wide drop-shadow-sm">
+            <h1 className="text-4xl font-extrabold tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-purple-800 to-indigo-600 drop-shadow-md">
               Loja <span className="text-purple-700">Camisa 10</span>
             </h1>
           </div>
-          <p className="text-gray-500 text-lg font-medium">
-            Estilo, conforto e paixão pelo jogo.
+          <p className="text-gray-600 text-lg font-medium text-center max-w-xl">
+            Estilo, conforto e paixão pelo jogo — encontre os melhores produtos para torcer com classe.
           </p>
         </div>
 
         {/* Grid de produtos */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-6xl mx-auto px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto px-6">
           {produtos.map((produto) => (
             <div
               key={produto.id}
-              className="group relative bg-white/70 backdrop-blur-md border border-gray-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 hover:scale-[1.03]"
+              className="group relative bg-white/60 backdrop-blur-md border border-gray-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 hover:scale-105"
             >
-              {/* Imagem */}
-              <div className="overflow-hidden">
+              {/* Imagem menor */}
+              <div className="overflow-hidden rounded-t-3xl">
                 <img
                   src={produto.imagem}
                   alt={produto.nome}
-                  className="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110"
+                  className="w-full h-52 object-cover transition-transform duration-700 group-hover:scale-105"
                   onError={(e) => {
                     e.target.src =
-                      "https://via.placeholder.com/200x150.png?text=Imagem+Indispon%C3%ADvel";
+                      "https://via.placeholder.com/300x300.png?text=Imagem+Indisponível";
                   }}
                 />
               </div>
 
               {/* Conteúdo */}
-              <div className="p-6 text-center">
+              <div className="p-5 text-center">
                 <h3 className="text-xl font-bold mb-2 text-gray-800 group-hover:text-purple-800 transition-colors duration-300">
                   {produto.nome}
                 </h3>
-                <p className="text-2xl font-semibold text-purple-700 mb-5">
+                <p className="text-xl font-semibold text-purple-700 mb-4">
                   R$ {produto.preco.toFixed(2)}
                 </p>
 
                 <button
                   onClick={() => addToCart(produto)}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-6 py-3 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 hover:scale-105"
                 >
                   <ShoppingCart className="w-5 h-5" strokeWidth={2.2} />
-                  <span>Adicionar ao carrinho</span>
+                  <span>Adicionar</span>
                 </button>
               </div>
             </div>
