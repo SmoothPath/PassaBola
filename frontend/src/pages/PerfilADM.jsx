@@ -1,6 +1,7 @@
 // frontend/src/pages/PerfilADM.jsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
+import axios from "axios";
 import {
   ShieldCheck,
   User,
@@ -8,13 +9,85 @@ import {
   CalendarPlus,
   ClipboardList,
   FileDown,
+  Edit,
+  Trash2,
 } from "lucide-react";
 
 export default function PerfilADM() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const nome = user?.name || "Administrador(a)";
   const email = user?.email || "admin@passabola.com";
   const isAdmin = user?.role === "admin" || user?.isAdmin;
+
+  const [posts, setPosts] = useState([]);
+  const [newPostTitle, setNewPostTitle] = useState("");
+  const [newPostContent, setNewPostContent] = useState("");
+
+  // Headers com token JWT
+  const axiosConfig = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+
+  useEffect(() => {
+    if (isAdmin) fetchPosts();
+  }, [isAdmin]);
+
+  const fetchPosts = async () => {
+    try {
+      const res = await axios.get("/api/posts");
+      const data = res.data.posts || res.data;
+      setPosts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Erro ao buscar postagens:", err);
+      setPosts([]);
+    }
+  };
+
+  const handleCreate = async () => {
+    if (!newPostTitle || !newPostContent) return alert("Preencha todos os campos");
+    try {
+      const res = await axios.post(
+        "/api/posts",
+        { title: newPostTitle, content: newPostContent },
+        axiosConfig
+      );
+      setPosts((prev) => [res.data, ...prev]);
+      setNewPostTitle("");
+      setNewPostContent("");
+    } catch (err) {
+      console.error("Erro ao criar postagem:", err);
+      alert(err.response?.data?.error || "Erro ao criar postagem");
+    }
+  };
+
+  const handleEdit = async (id) => {
+    const updatedTitle = prompt("Novo título:");
+    const updatedContent = prompt("Novo conteúdo:");
+    if (!updatedTitle || !updatedContent) return;
+
+    try {
+      const res = await axios.put(
+        `/api/posts/${id}`,
+        { title: updatedTitle, content: updatedContent },
+        axiosConfig
+      );
+      setPosts((prev) => prev.map((p) => (p.id === id ? res.data : p)));
+    } catch (err) {
+      console.error("Erro ao atualizar postagem:", err);
+      alert(err.response?.data?.error || "Erro ao atualizar postagem");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Tem certeza que deseja excluir esta postagem?")) return;
+    try {
+      await axios.delete(`/api/posts/${id}`, axiosConfig);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      console.error("Erro ao excluir postagem:", err);
+      alert(err.response?.data?.error || "Erro ao excluir postagem");
+    }
+  };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-violet-50 to-white font-poppins text-gray-900">
@@ -25,11 +98,10 @@ export default function PerfilADM() {
           Painel Administrativo
         </h1>
         <p className="text-gray-600 text-base mt-2">
-          Gerencie eventos, inscrições e informações de administrador.
+          Gerencie eventos, inscrições e postagens do site.
         </p>
       </header>
 
-      {/* Conteúdo */}
       <main className="mx-auto mt-12 max-w-5xl px-12 space-y-10">
         {/* Informações do Administrador */}
         <section className="bg-white rounded-2xl shadow-md border border-slate-100 p-8">
@@ -132,6 +204,65 @@ export default function PerfilADM() {
             </div>
           </div>
         </section>
+
+        {/* Postagens */}
+        {isAdmin && (
+          <section className="bg-white rounded-2xl shadow-md border border-slate-100 p-8">
+            <h2 className="text-xl font-bold mb-5 text-violet-700">Gerenciar Postagens</h2>
+
+            <div className="mb-6 flex flex-col gap-4">
+              <input
+                type="text"
+                placeholder="Título"
+                value={newPostTitle}
+                onChange={(e) => setNewPostTitle(e.target.value)}
+                className="border rounded-lg p-2"
+              />
+              <textarea
+                placeholder="Conteúdo"
+                value={newPostContent}
+                onChange={(e) => setNewPostContent(e.target.value)}
+                className="border rounded-lg p-2"
+              />
+              <button
+                onClick={handleCreate}
+                className="bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition"
+              >
+                Criar Postagem
+              </button>
+            </div>
+
+            {posts.length === 0 ? (
+              <p className="text-gray-600">Nenhuma postagem criada ainda.</p>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                {posts.map((post) => (
+                  <div
+                    key={post.id}
+                    className="bg-gray-50 border rounded-2xl p-4 shadow hover:shadow-lg transition"
+                  >
+                    <h3 className="font-bold text-lg mb-2">{post.title}</h3>
+                    <p className="text-gray-700">{post.content}</p>
+                    <div className="flex gap-2 mt-4">
+                      <button
+                        onClick={() => handleEdit(post.id)}
+                        className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1"
+                      >
+                        <Edit className="w-4 h-4" /> Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(post.id)}
+                        className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 flex items-center gap-1"
+                      >
+                        <Trash2 className="w-4 h-4" /> Excluir
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
       </main>
     </div>
   );

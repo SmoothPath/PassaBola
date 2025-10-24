@@ -1,11 +1,11 @@
-// backend/server.js
 const express = require('express');
 const cors = require('cors');
 
 // importa os routers
 const { router: authRoutes } = require('./routes/auth');
 const { router: eventosRoutes } = require('./routes/eventos');
-const {router: sthRoutes} = require('./routes/sthRoutes');
+const { router: sthRoutes } = require('./routes/sthRoutes');
+const { router: postsRoutes } = require('./routes/posts'); // nova rota para posts
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -18,6 +18,9 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/eventos', eventosRoutes); 
 app.use('/api/dados', sthRoutes);
+app.use('/api/posts', postsRoutes); // registra a rota de posts
+
+
 
 // Rota padrão
 app.get('/', (req, res) => {
