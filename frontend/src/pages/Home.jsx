@@ -44,7 +44,7 @@ const Home = () => {
             tabIndex={-1}
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
-          <div className="relative z-20 max-w-xl p-6 sm:p-8 rounded-lg text-white shadow-lg">
+          <div className="relative z-20 max-w-xl p-6 sm:p-8 rounded-lg text-white">
             <h1
               className="text-4xl md:text-5xl font-extrabold mb-4"
               style={{ color: "#f0e9f3" }}
