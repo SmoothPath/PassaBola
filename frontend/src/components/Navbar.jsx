@@ -71,14 +71,13 @@ export default function NavBar() {
       />
 
       <DropDown
-        label="Eventos"
-        items={[
-          // { label: "Lista de Eventos", to: "/eventos" },
-          { label: "Criar Novo", to: "admin/eventos/novo" },
+          label="Eventos"
+          items={[
+          ...(user?.isAdmin ? [{ label: "Criar Novo", to: "/eventos/novo" }] : []),
           { label: "Explorar", to: "/eventos" },
           { label: "Meus Eventos", to: "/eventos/meus" },
-        ]}
-      />
+  ]}
+/>
 
       <NavLink
         to="/doacao"

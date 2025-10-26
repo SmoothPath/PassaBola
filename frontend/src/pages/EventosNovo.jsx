@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createEvento } from "../services/eventos";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Modal from "../components/Modal"; // ✅ Importar o modal
+import Modal from "../components/Modal";
+import { useAuth } from "../components/contexts/AuthContext";
 
-// FIX dos ícones do Leaflet
+// Corrige ícones do Leaflet
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -18,7 +19,7 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 });
 
-// Componente para centralizar mapa
+// Componente para centralizar o mapa
 function Recenter({ lat, lon }) {
   const map = useMap();
   map.setView([lat, lon], 15);
@@ -26,7 +27,16 @@ function Recenter({ lat, lon }) {
 }
 
 export default function EventoNovo() {
+  const { user } = useAuth();
   const navigate = useNavigate();
+
+  // Redireciona se não for admin
+  useEffect(() => {
+    if (!user?.isAdmin) {
+      navigate("/eventos");
+    }
+  }, [user, navigate]);
+
   const [form, setForm] = useState({
     titulo: "",
     dataISO: "",
@@ -35,10 +45,11 @@ export default function EventoNovo() {
     descricao: "",
     status: "ativo",
   });
+
   const [coords, setCoords] = useState({ lat: -23.55052, lon: -46.633308 }); // SP default
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
-  const [showModal, setShowModal] = useState(false); // ✅ Novo estado para o modal
+  const [showModal, setShowModal] = useState(false);
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
@@ -56,13 +67,15 @@ export default function EventoNovo() {
     }
   };
 
-  async function onSubmit(e) {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setErr("");
+
     if (!form.titulo || !form.dataISO || !form.local) {
       setErr("Preencha título, data e local.");
       return;
     }
+
     try {
       setLoading(true);
       await createEvento({
@@ -71,18 +84,20 @@ export default function EventoNovo() {
         latitude: coords.lat,
         longitude: coords.lon,
       });
-      setShowModal(true); // ✅ Mostrar modal após sucesso
+      setShowModal(true);
     } catch (e) {
+      console.error(e);
       setErr("Falha ao criar evento.");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">Criar evento</h1>
+
         <form onSubmit={onSubmit} className="bg-white rounded-2xl shadow p-5 space-y-4">
           {/* Título */}
           <div>
