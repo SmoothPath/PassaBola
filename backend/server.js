@@ -10,6 +10,8 @@ const { router: postsRoutes } = require('./routes/posts'); // nova rota para pos
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const { router: scoresRoutes } = require('./routes/scores');
+
 // Middlewares
 app.use(express.json());
 app.use(cors());
@@ -19,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/eventos', eventosRoutes); 
 app.use('/api/dados', sthRoutes);
 app.use('/api/posts', postsRoutes); // registra a rota de posts
+app.use('/api/scores', scoresRoutes);
 
 
 
