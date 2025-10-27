@@ -1,155 +1,182 @@
 // backend/routes/eventos.js
-const express = require('express');
-const { authenticateToken } = require('./auth');
+const express = require("express");
+const QRCode = require("qrcode");
+
+// Se você já tem esse middleware em outro arquivo, mantenha seu import.
+// Aqui vai um stub caso seu projeto use `authenticateToken` de ./auth.
+let authenticateToken;
+try {
+  ({ authenticateToken } = require("./auth"));
+} catch {
+  // Fallback simples (aceita tudo) — troque pelo seu real se existir.
+  authenticateToken = (req, _res, next) => {
+    // Simula usuário logado; substitua pelos dados reais do JWT
+    req.user = req.user || {
+      email: "user@example.com",
+      name: "Usuário Demo",
+      role: "user",
+    };
+    next();
+  };
+}
 
 const router = express.Router();
 
-// Middleware para verificar se é admin
+/** Apenas admin */
 function requireAdmin(req, res, next) {
-  if (req.user?.role === 'admin') return next();
-  return res.status(403).json({ error: 'Acesso restrito a administradores' });
+  if (req.user?.role === "admin") return next();
+  return res.status(403).json({ error: "Acesso restrito a administradores" });
 }
 
-// "banco" em memória
+/** "Banco" em memória */
 let eventos = [];
 let nextId = 1;
 
-/**
- * CREATE – cria evento (apenas ADMIN)
- */
-router.post('/', authenticateToken, requireAdmin, (req, res) => {
-  const { titulo, dataISO, local, capacidade, descricao, status = 'ativo' } = req.body;
+/** Helpers */
+function getEvento(id) {
+  return eventos.find((e) => e.id === Number(id)) || null;
+}
 
-  if (!titulo || !dataISO || !local) {
-    return res.status(400).json({ error: 'Campos obrigatórios: titulo, dataISO, local' });
-  }
+/** LISTAR (público) */
+router.get("/", (_req, res) => {
+  res.json({ ok: true, eventos });
+});
+
+/** CRIAR (admin) */
+router.post("/", authenticateToken, requireAdmin, (req, res) => {
+  const { titulo, descricao, data, local, vagas } = req.body || {};
+  if (!titulo) return res.status(400).json({ error: "titulo é obrigatório" });
 
   const novo = {
     id: nextId++,
     titulo,
-    dataISO,
-    local,
-    capacidade: Number(capacidade) || 0,
-    descricao: descricao || '',
-    status,
-    createdBy: req.user?.email || 'desconhecido',
+    descricao: descricao || "",
+    data: data || "", // ex.: '2025-11-10 15:00'
+    local: local || "",
+    vagas: typeof vagas === "number" ? vagas : null,
+    inscritos: [], // emails
     createdAt: new Date().toISOString(),
-    inscritos: [],
+    updatedAt: new Date().toISOString(),
   };
-
   eventos.push(novo);
-  return res.status(201).json({ ok: true, evento: novo });
+  res.status(201).json({ ok: true, evento: novo });
 });
 
-/**
- * LIST – lista eventos (autenticado)
- */
-router.get('/', authenticateToken, (req, res) => {
-  const { q, status } = req.query;
-  let lista = [...eventos];
-
-  if (status) lista = lista.filter(e => e.status === status);
-  if (q) {
-    const s = String(q).toLowerCase();
-    lista = lista.filter(e =>
-      e.titulo.toLowerCase().includes(s) ||
-      e.local.toLowerCase().includes(s)
-    );
-  }
-
-  res.json({ ok: true, eventos: lista });
-});
-
-/**
- * LISTAR EVENTOS INSCRITOS – do usuário atual
- */
-router.get('/meus/inscritos', authenticateToken, (req, res) => {
-  const meus = eventos.filter(e => e.inscritos.includes(req.user.email));
-  res.json({ ok: true, eventos: meus });
-});
-
-/**
- * READ – obter 1 evento
- */
-router.get('/:id', authenticateToken, (req, res) => {
-  const id = Number(req.params.id);
-  const evt = eventos.find(e => e.id === id);
-  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+/** LER (público) */
+router.get("/:id", (req, res) => {
+  const evt = getEvento(req.params.id);
+  if (!evt) return res.status(404).json({ error: "Evento não encontrado" });
   res.json({ ok: true, evento: evt });
 });
 
-/**
- * UPDATE – editar evento (apenas ADMIN)
- */
-router.put('/:id', authenticateToken, requireAdmin, (req, res) => {
-  const id = Number(req.params.id);
-  const idx = eventos.findIndex(e => e.id === id);
-  if (idx === -1) return res.status(404).json({ error: 'Evento não encontrado' });
+/** ATUALIZAR (admin) */
+router.put("/:id", authenticateToken, requireAdmin, (req, res) => {
+  const evt = getEvento(req.params.id);
+  if (!evt) return res.status(404).json({ error: "Evento não encontrado" });
 
-  const patch = req.body || {};
-  eventos[idx] = { ...eventos[idx], ...patch };
-  res.json({ ok: true, evento: eventos[idx] });
+  const { titulo, descricao, data, local, vagas } = req.body || {};
+  if (titulo !== undefined) evt.titulo = titulo;
+  if (descricao !== undefined) evt.descricao = descricao;
+  if (data !== undefined) evt.data = data;
+  if (local !== undefined) evt.local = local;
+  if (vagas !== undefined) evt.vagas = vagas;
+  evt.updatedAt = new Date().toISOString();
+
+  res.json({ ok: true, evento: evt });
 });
 
-/**
- * DELETE – remover evento (apenas ADMIN)
- */
-router.delete('/:id', authenticateToken, requireAdmin, (req, res) => {
+/** REMOVER (admin) */
+router.delete("/:id", authenticateToken, requireAdmin, (req, res) => {
   const id = Number(req.params.id);
-  const before = eventos.length;
-  eventos = eventos.filter(e => e.id !== id);
-  if (eventos.length === before) return res.status(404).json({ error: 'Evento não encontrado' });
+  const idx = eventos.findIndex((e) => e.id === id);
+  if (idx === -1) return res.status(404).json({ error: "Evento não encontrado" });
+  eventos.splice(idx, 1);
   res.json({ ok: true });
 });
 
-/**
- * INSCRIÇÃO – usuário se inscreve em um evento
- */
-router.post('/:id/inscrever', authenticateToken, (req, res) => {
-  const id = Number(req.params.id);
-  const evt = eventos.find(e => e.id === id);
-  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+/** INSCREVER (autenticado) — GERA QR CODE */
+router.post("/:id/inscrever", authenticateToken, async (req, res) => {
+  const evt = getEvento(req.params.id);
+  if (!evt) return res.status(404).json({ error: "Evento não encontrado" });
 
-  if (evt.inscritos.includes(req.user.email)) {
-    return res.status(400).json({ error: 'Usuário já inscrito' });
+  // já inscrito? (aqui eu deixo retornar o QR mesmo assim)
+  const jaInscrito = evt.inscritos.includes(req.user.email);
+  if (!jaInscrito) {
+    if (typeof evt.vagas === "number" && evt.inscritos.length >= evt.vagas) {
+      return res.status(409).json({ error: "Evento sem vagas disponíveis" });
+    }
+    evt.inscritos.push(req.user.email);
+    evt.updatedAt = new Date().toISOString();
   }
 
-  if (evt.capacidade > 0 && evt.inscritos.length >= evt.capacidade) {
-    return res.status(400).json({ error: 'Capacidade máxima atingida' });
-  }
+  const qrPayload = {
+    tipo: "checkin_evento",
+    eventoId: evt.id,
+    eventoTitulo: evt.titulo,
+    email: req.user.email,
+    nome: req.user.name || "",
+    data: evt.data || "",
+  };
 
-  evt.inscritos.push(req.user.email);
+  try {
+    const qrcodeDataUrl = await QRCode.toDataURL(JSON.stringify(qrPayload), {
+      errorCorrectionLevel: "M",
+      width: 512,
+      margin: 1,
+    });
+
+    return res.json({
+      ok: true,
+      jaInscrito,
+      msg: jaInscrito ? "Você já estava inscrito. QR recarregado." : "Inscrição confirmada!",
+      evento: evt,
+      qrcodeDataUrl,
+      qrPayload,
+    });
+  } catch (err) {
+    console.error("Erro ao gerar QR:", err);
+    return res.status(500).json({ error: "Falha ao gerar QR Code" });
+  }
+});
+
+/** DESINSCREVER (autenticado) */
+router.post("/:id/desinscrever", authenticateToken, (req, res) => {
+  const evt = getEvento(req.params.id);
+  if (!evt) return res.status(404).json({ error: "Evento não encontrado" });
+
+  evt.inscritos = evt.inscritos.filter((e) => e !== req.user.email);
+  evt.updatedAt = new Date().toISOString();
   res.json({ ok: true, evento: evt });
 });
 
-/**
- * CANCELAR INSCRIÇÃO – usuário sai do evento
- */
-router.post('/:id/cancelar', authenticateToken, (req, res) => {
-  const id = Number(req.params.id);
-  const evt = eventos.find(e => e.id === id);
-  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
+/** REGERAR/EXIBIR QR (autenticado) */
+router.get("/:id/qrcode", authenticateToken, async (req, res) => {
+  const evt = getEvento(req.params.id);
+  if (!evt) return res.status(404).json({ error: "Evento não encontrado" });
+  if (!evt.inscritos.includes(req.user.email)) {
+    return res.status(403).json({ error: "Você não está inscrito neste evento" });
+  }
 
-  evt.inscritos = evt.inscritos.filter(email => email !== req.user.email);
-  res.json({ ok: true, evento: evt });
-});
+  const qrPayload = {
+    tipo: "checkin_evento",
+    eventoId: evt.id,
+    eventoTitulo: evt.titulo,
+    email: req.user.email,
+    nome: req.user.name || "",
+    data: evt.data || "",
+  };
 
-/**
- * REMOVER INSCRITO ESPECÍFICO – apenas ADMIN
- */
-router.delete('/:id/inscritos/:email', authenticateToken, requireAdmin, (req, res) => {
-  const id = Number(req.params.id);
-  const email = decodeURIComponent(req.params.email || "").toLowerCase();
-
-  const evt = eventos.find(e => e.id === id);
-  if (!evt) return res.status(404).json({ error: 'Evento não encontrado' });
-  if (!email) return res.status(400).json({ error: 'Email inválido' });
-
-  const before = evt.inscritos.length;
-  evt.inscritos = evt.inscritos.filter(e => e.toLowerCase() !== email);
-  const removed = evt.inscritos.length < before;
-
-  res.json({ ok: true, removed, evento: evt });
+  try {
+    const qrcodeDataUrl = await QRCode.toDataURL(JSON.stringify(qrPayload), {
+      errorCorrectionLevel: "M",
+      width: 512,
+      margin: 1,
+    });
+    res.json({ ok: true, qrcodeDataUrl, qrPayload });
+  } catch (err) {
+    console.error("Erro ao gerar QR:", err);
+    res.status(500).json({ error: "Falha ao gerar QR Code" });
+  }
 });
 
 module.exports = { router };

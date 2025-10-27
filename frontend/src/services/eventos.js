@@ -21,3 +21,6 @@ export const desinscreverDoEvento = (id) => api.post(`/eventos/${id}/desinscreve
 
 // (se aplicar o patch de backend para remover um inscrito específico)
 export const removerInscrito = (id, email) => api.delete(`/eventos/${id}/inscritos/${encodeURIComponent(email)}`);
+
+// Cria o qr code
+export const getQrDoEvento = (id) => api.get(`/eventos/${id}/qrcode`);

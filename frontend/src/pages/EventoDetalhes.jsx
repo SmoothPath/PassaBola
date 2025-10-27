@@ -1,3 +1,4 @@
+// frontend/src/pages/EventoDetalhes.jsx
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
@@ -7,6 +8,7 @@ import {
   inscreverNoEvento,
   desinscreverDoEvento,
   removerInscrito, // só funciona se aplicar o patch backend opcional
+  getQrDoEvento,   // 👈 ADICIONE este export no services/eventos.js (ver abaixo)
 } from "../services/eventos";
 import { useAuth } from "../components/contexts/AuthContext";
 
@@ -33,6 +35,10 @@ export default function EventoDetalhes() {
   const [form, setForm] = useState({ titulo: "", dataISO: "", local: "", capacidade: 0, descricao: "", status: "ativo" });
   const isAdmin = user?.role === "admin" || user?.isAdmin;
   const isInscrito = useMemo(() => evt?.inscritos?.includes(user?.email), [evt, user]);
+
+  // 👇 estado do QR
+  const [qr, setQr] = useState("");
+  const [qrMsg, setQrMsg] = useState("");
 
   async function load() {
     try {
@@ -62,7 +68,13 @@ export default function EventoDetalhes() {
 
   const handleInscrever = async () => {
     try {
-      await inscreverNoEvento(id);
+      setQr(""); setQrMsg("");
+      const { data } = await inscreverNoEvento(id);
+      // backend deve retornar { ok, msg, evento, qrcodeDataUrl }
+      if (data?.ok) {
+        setQr(data.qrcodeDataUrl || "");
+        setQrMsg(data.msg || "Inscrição confirmada!");
+      }
       await load();
     } catch (e) {
       alert(e?.response?.data?.error || "Falha ao inscrever-se.");
@@ -71,10 +83,25 @@ export default function EventoDetalhes() {
 
   const handleDesinscrever = async () => {
     try {
+      setQr(""); setQrMsg("");
       await desinscreverDoEvento(id);
       await load();
     } catch (e) {
       alert(e?.response?.data?.error || "Falha ao sair do evento.");
+    }
+  };
+
+  // 👇 buscar/regenar o QR se já inscrito
+  const handleMostrarQr = async () => {
+    try {
+      setQr(""); setQrMsg("");
+      const { data } = await getQrDoEvento(id);
+      if (data?.ok) {
+        setQr(data.qrcodeDataUrl || "");
+        setQrMsg("QR Code carregado.");
+      }
+    } catch (e) {
+      alert(e?.response?.data?.error || "Erro ao exibir QR.");
     }
   };
 
@@ -154,15 +181,39 @@ export default function EventoDetalhes() {
 
             {/* Ações do usuário */}
             {user && (
-              <div className="flex gap-3">
+              <div className="flex flex-wrap gap-3">
                 {!isInscrito ? (
                   <button onClick={handleInscrever} className="rounded-xl bg-pink-600 text-white font-semibold px-5 py-2.5 hover:bg-pink-700">
                     Inscrever-se
                   </button>
                 ) : (
-                  <button onClick={handleDesinscrever} className="rounded-xl border border-slate-300 text-slate-700 font-semibold px-5 py-2.5 hover:bg-slate-100">
-                    Cancelar inscrição
-                  </button>
+                  <>
+                    <button onClick={handleDesinscrever} className="rounded-xl border border-slate-300 text-slate-700 font-semibold px-5 py-2.5 hover:bg-slate-100">
+                      Cancelar inscrição
+                    </button>
+                    <button onClick={handleMostrarQr} className="rounded-xl bg-indigo-600 text-white font-semibold px-5 py-2.5 hover:bg-indigo-700">
+                      Mostrar meu QR
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+
+            {/* QR Code */}
+            {(qr || qrMsg) && (
+              <div className="rounded-xl border border-slate-200 p-4">
+                {qrMsg && <p className="text-slate-700 mb-2">{qrMsg}</p>}
+                {qr && (
+                  <>
+                    <img src={qr} alt="QR Code do evento" className="w-64 h-64 object-contain border rounded" />
+                    <a
+                      href={qr}
+                      download={`qrcode-evento-${id}.png`}
+                      className="inline-block mt-2 text-indigo-600 underline"
+                    >
+                      Baixar QR Code
+                    </a>
+                  </>
                 )}
               </div>
             )}
