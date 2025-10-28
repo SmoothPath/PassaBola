@@ -4,7 +4,6 @@ import { createEvento } from "../services/eventos";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import Modal from "../components/Modal";
 import { useAuth } from "../components/contexts/AuthContext";
 
 // Corrige ícones do Leaflet
@@ -24,6 +23,25 @@ function Recenter({ lat, lon }) {
   const map = useMap();
   map.setView([lat, lon], 15);
   return null;
+}
+
+// Modal estilizado com Tailwind 4.1
+function Modal({ isOpen, onClose, children }) {
+  if (!isOpen) return null;
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-2xl p-6 max-w-md w-[90%] text-center shadow-xl"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {children}
+      </div>
+    </div>
+  );
 }
 
 export default function EventoNovo() {
@@ -46,7 +64,7 @@ export default function EventoNovo() {
     status: "ativo",
   });
 
-  const [coords, setCoords] = useState({ lat: -23.55052, lon: -46.633308 }); // SP default
+  const [coords, setCoords] = useState({ lat: -23.55052, lon: -46.633308 }); // SP padrão
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -94,11 +112,14 @@ export default function EventoNovo() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 relative">
       <main className="max-w-3xl mx-auto px-4 py-8">
         <h1 className="text-2xl font-bold mb-4">Criar evento</h1>
 
-        <form onSubmit={onSubmit} className="bg-white rounded-2xl shadow p-5 space-y-4">
+        <form
+          onSubmit={onSubmit}
+          className="bg-white rounded-2xl shadow p-5 space-y-4 relative z-10"
+        >
           {/* Título */}
           <div>
             <label className="block text-sm font-semibold mb-1">Título *</label>
@@ -112,7 +133,9 @@ export default function EventoNovo() {
           {/* Data/Hora e Local */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Data/Hora (ISO) *</label>
+              <label className="block text-sm font-semibold mb-1">
+                Data/Hora (ISO) *
+              </label>
               <input
                 type="datetime-local"
                 className="w-full border rounded-xl px-3 py-2"
@@ -140,7 +163,9 @@ export default function EventoNovo() {
           {/* Capacidade e Status */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-semibold mb-1">Capacidade</label>
+              <label className="block text-sm font-semibold mb-1">
+                Capacidade
+              </label>
               <input
                 type="number"
                 min="0"
@@ -178,11 +203,23 @@ export default function EventoNovo() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-semibold mb-1">Latitude</label>
-              <input type="text" readOnly value={coords.lat} className="w-full border rounded-xl px-3 py-2" />
+              <input
+                type="text"
+                readOnly
+                value={coords.lat}
+                className="w-full border rounded-xl px-3 py-2"
+              />
             </div>
             <div>
-              <label className="block text-sm font-semibold mb-1">Longitude</label>
-              <input type="text" readOnly value={coords.lon} className="w-full border rounded-xl px-3 py-2" />
+              <label className="block text-sm font-semibold mb-1">
+                Longitude
+              </label>
+              <input
+                type="text"
+                readOnly
+                value={coords.lon}
+                className="w-full border rounded-xl px-3 py-2"
+              />
             </div>
           </div>
 
@@ -190,6 +227,7 @@ export default function EventoNovo() {
           <MapContainer
             center={[coords.lat, coords.lon]}
             zoom={13}
+            className="z-0"
             style={{ height: "300px", width: "100%", marginTop: "10px" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -209,7 +247,11 @@ export default function EventoNovo() {
             >
               {loading ? "Salvando..." : "Salvar"}
             </button>
-            <button type="button" className="rounded-xl border px-4 py-2.5" onClick={() => navigate("/eventos")}>
+            <button
+              type="button"
+              className="rounded-xl border px-4 py-2.5"
+              onClick={() => navigate("/eventos")}
+            >
               Cancelar
             </button>
           </div>
@@ -218,16 +260,28 @@ export default function EventoNovo() {
 
       {/* ✅ Modal de sucesso */}
       <Modal isOpen={showModal} onClose={() => navigate("/eventos")}>
-        <h2 className="text-xl font-bold mb-4">Evento criado com sucesso!</h2>
-        <p><strong>Título:</strong> {form.titulo}</p>
-        <p><strong>Data:</strong> {form.dataISO}</p>
-        <p><strong>Local:</strong> {form.local}</p>
-        <p><strong>Capacidade:</strong> {form.capacidade}</p>
-        <p><strong>Status:</strong> {form.status}</p>
-        <div className="mt-4">
+        <h2 className="text-xl font-bold mb-4 text-violet-700">
+          Evento criado com sucesso!
+        </h2>
+        <p>
+          <strong>Título:</strong> {form.titulo}
+        </p>
+        <p>
+          <strong>Data:</strong> {form.dataISO}
+        </p>
+        <p>
+          <strong>Local:</strong> {form.local}
+        </p>
+        <p>
+          <strong>Capacidade:</strong> {form.capacidade}
+        </p>
+        <p>
+          <strong>Status:</strong> {form.status}
+        </p>
+        <div className="mt-6">
           <button
             onClick={() => navigate("/eventos")}
-            className="bg-violet-600 text-white px-4 py-2 rounded-xl"
+            className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-xl"
           >
             Voltar à lista
           </button>
