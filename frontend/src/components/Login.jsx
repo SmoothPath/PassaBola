@@ -37,7 +37,7 @@ export default function LoginModal() {
 
       // se tiver lógica de redirecionamento por role
       if (user?.role === "admin") {
-        navigate("/perfiladm");
+        navigate("/admin/perfil");
       } else {
         const quiz = await getQuizStatus?.(user?.id);
         navigate(quiz?.done ? "/perfil" : "/");

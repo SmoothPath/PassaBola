@@ -73,7 +73,7 @@ export default function NavBar() {
       <DropDown
           label="Eventos"
           items={[
-          ...(user?.isAdmin ? [{ label: "Criar Novo", to: "/eventos/novo" }] : []),
+          ...(user?.isAdmin ? [{ label: "Criar Novo", to: "/admin/eventos/novo" }] : []),
           { label: "Explorar", to: "/eventos" },
           { label: "Meus Eventos", to: "/eventos/meus" },
   ]}

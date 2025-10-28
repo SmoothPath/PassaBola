@@ -1,6 +1,7 @@
 // frontend/src/pages/PerfilADM.jsx
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   ShieldCheck,
@@ -18,6 +19,7 @@ export default function PerfilADM() {
   const nome = user?.name || "Administrador(a)";
   const email = user?.email || "admin@passabola.com";
   const isAdmin = user?.role === "admin" || user?.isAdmin;
+  const navigate = useNavigate();
 
   const [posts, setPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState("");
@@ -230,6 +232,12 @@ export default function PerfilADM() {
               >
                 Criar Postagem
               </button>
+               <button
+    onClick={() => navigate("/ranking")}
+    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
+  >
+    Ver Ranking de Jogadoras 🏆
+  </button>
             </div>
 
             {posts.length === 0 ? (
