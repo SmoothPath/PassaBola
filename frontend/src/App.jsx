@@ -24,6 +24,7 @@ import Doacao from "./pages/Doacao";
 import Camisa10 from "./pages/Camisa10";
 import CartPage from "./pages/CartPage";
 import Parceiros from "./pages/Parceiros";
+import Ranking from "./pages/Ranking";
 
 // Páginas de voluntários
 import QueroSer from "./pages/Voluntarios/QueroSer";
@@ -73,6 +74,7 @@ export default function App() {
             <Route path="/camisa10" element={<Camisa10 />} />
             <Route path="/carrinho" element={<CartPage />} />
             <Route path="/parceiros" element={<Parceiros />} />
+             <Route path="/ranking" element={<Ranking />} />
 
             {/* Rotas voluntários */}
             <Route path="/voluntarios/quero-ser" element={<QueroSer />} />

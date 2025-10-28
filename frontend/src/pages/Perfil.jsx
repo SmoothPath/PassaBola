@@ -230,6 +230,12 @@ useEffect(() => {
               >
                 Explorar eventos
               </button>
+              <button
+    onClick={() => navigate("/ranking")}
+    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
+  >
+    Ver Ranking de Jogadoras 🏆
+  </button>
             </div>
             <div className="max-w-5xl mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Perfil da Jogadora</h1>

@@ -6,6 +6,7 @@ const { router: authRoutes } = require('./routes/auth');
 const { router: eventosRoutes } = require('./routes/eventos');
 const { router: sthRoutes } = require('./routes/sthRoutes');
 const { router: postsRoutes } = require('./routes/posts'); // nova rota para posts
+const {router: rankingRoute} = require("./routes/rankingRoute.js")
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -20,6 +21,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/eventos', eventosRoutes); 
 app.use('/api/dados', sthRoutes);
 app.use('/api/posts', postsRoutes); // registra a rota de posts
+app.use("/api/ranking", rankingRoute);
 
 
 
