@@ -2,7 +2,7 @@ import React from "react";
 import PageWrapper from "../components/PageWrapper";
 import { useCart } from "../components/contexts/CartContext";
 import { ShoppingCart, Shirt, ArrowLeft } from "lucide-react";
-import { useNavigate } from "react-router-dom"; // Para navegação
+import { useNavigate } from "react-router-dom";
 
 const produtos = [
   { id: 1, nome: "Camisa 10 - Passa a Bola", imagem: "/assets/camisa10.jpg", preco: 120.0 },
@@ -20,18 +20,19 @@ export default function Camisa10() {
   return (
     <PageWrapper>
       <div className="relative bg-gradient-to-br from-purple-50 via-white to-purple-100 min-h-screen py-16">
-        {/* Botão de voltar */}
-        <div className="max-w-6xl mx-auto px-6 mb-8">
+
+        {/* 🔙 Botão de voltar */}
+        <div className="max-w-6xl mx-auto px-6 mb-10">
           <button
             onClick={() => navigate(-1)}
-            className="flex items-center gap-2 text-purple-700 font-semibold px-4 py-2 rounded-lg border border-purple-300 hover:bg-purple-100 transition-all duration-300"
+            className="flex items-center gap-2 text-purple-700 font-semibold px-5 py-2 rounded-lg border border-purple-300 hover:bg-purple-100 transition-all duration-300 shadow-sm hover:shadow-md"
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={2.2} />
             Voltar
           </button>
         </div>
 
-        {/* Cabeçalho elegante */}
+        {/* Cabeçalho */}
         <div className="flex flex-col items-center mb-12 px-6">
           <div className="flex items-center space-x-3 mb-3">
             <Shirt className="w-10 h-10 text-purple-700" strokeWidth={2.5} />
@@ -49,17 +50,17 @@ export default function Camisa10() {
           {produtos.map((produto) => (
             <div
               key={produto.id}
-              className="group relative bg-white/60 backdrop-blur-md border border-gray-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 hover:scale-105"
+              className="group relative bg-white/80 backdrop-blur-md border border-gray-100 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-1 hover:scale-105"
             >
-              {/* Imagem menor */}
-              <div className="overflow-hidden rounded-t-3xl">
+              {/* Imagem centralizada e sem corte */}
+              <div className="flex items-center justify-center bg-gray-50 h-72 p-4">
                 <img
                   src={produto.imagem}
                   alt={produto.nome}
-                  className="w-full h-52 object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="max-h-full max-w-full object-contain mx-auto transition-transform duration-700 group-hover:scale-105"
                   onError={(e) => {
                     e.target.src =
-                      "https://via.placeholder.com/300x300.png?text=Imagem+Indisponível";
+                      'https://via.placeholder.com/300x300.png?text=Imagem+Indisponível';
                   }}
                 />
               </div>
