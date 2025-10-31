@@ -19,11 +19,15 @@ export default function NavBar() {
     navigate("/");
   };
 
+  // 💜 Estilos base dos links
   const linkBase =
-    "text-sm font-agrandir whitespace-nowrap transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] rounded-md px-2 py-1";
-  const linkInactive = "text-[#7D1FA6]/80 hover:text-[#7D1FA6]";
-  const linkActive = "text-[#7D1FA6] font-semibold underline";
+    "relative text-sm font-agrandir whitespace-nowrap transition-all duration-300 px-3 py-2 rounded-md";
+  const linkInactive =
+    "text-[#7D1FA6]/80 hover:text-[#7D1FA6] hover:bg-[#7D1FA6]/10 hover:shadow-sm";
+  const linkActive =
+    "text-[#7D1FA6] font-semibold bg-[#7D1FA6]/10 shadow-inner border-b-2 border-[#7D1FA6]";
 
+  // Componente dos links do menu
   const MenuLinks = ({ vertical = false }) => (
     <div
       className={`${
@@ -71,13 +75,15 @@ export default function NavBar() {
       />
 
       <DropDown
-          label="Eventos"
-          items={[
-          ...(user?.isAdmin ? [{ label: "Criar Novo", to: "/admin/eventos/novo" }] : []),
+        label="Eventos"
+        items={[
+          ...(user?.isAdmin
+            ? [{ label: "Criar Novo", to: "/admin/eventos/novo" }]
+            : []),
           { label: "Explorar", to: "/eventos" },
           { label: "Meus Eventos", to: "/eventos/meus" },
-  ]}
-/>
+        ]}
+      />
 
       <NavLink
         to="/doacao"
@@ -99,18 +105,18 @@ export default function NavBar() {
         Parceiros
       </NavLink>
 
-      {/* Carrinho */}
+      {/* 🛒 Carrinho */}
       <button
         onClick={() => {
           closeMenu();
           navigate("/carrinho");
         }}
-        className="relative text-[#7D1FA6] hover:text-[#9124BF]"
+        className="relative text-[#7D1FA6] hover:text-[#9124BF] transition-all duration-300 transform hover:scale-110"
         aria-label={`Ir para o carrinho, ${cart.length} item${
           cart.length !== 1 ? "s" : ""
         }`}
       >
-        {"\u{1F6D2}"}
+        🛒
         {cart.length > 0 && (
           <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full px-1.5">
             {cart.length}
@@ -118,7 +124,7 @@ export default function NavBar() {
         )}
       </button>
 
-      {/* Entrar / Perfil do usuário */}
+      {/* 👤 Entrar / Perfil */}
       {user ? (
         <DropDown
           label="Entrar"
@@ -127,16 +133,12 @@ export default function NavBar() {
               label: "Perfil",
               onClick: () => {
                 closeMenu();
-                // Redireciona para admin ou perfil normal
                 navigate(user.isAdmin ? "/admin/perfil" : "/perfil");
               },
             },
-            {
-              label: "Sair",
-              onClick: handleLogout,
-            },
+            { label: "Sair", onClick: handleLogout },
           ]}
-          customButton="rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] transition"
+          customButton="rounded-xl bg-[#7D1FA6] text-white text-sm font-semibold px-4 py-2 hover:bg-[#9124BF] hover:shadow-lg transition-all duration-300"
         />
       ) : (
         <Login />
@@ -146,11 +148,11 @@ export default function NavBar() {
 
   return (
     <nav
-      className="sticky top-0 z-40 bg-white shadow-md"
+      className="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-md border-b border-purple-100"
       aria-label="Barra de navegação principal"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between">
-        {/* Logo */}
+        {/* 🔮 Logo */}
         <Link
           to="/"
           className="flex items-center gap-2"
@@ -160,22 +162,22 @@ export default function NavBar() {
           <img
             src="/assets/logo.jpg"
             alt="Passa a Bola"
-            className="w-9 h-9 object-cover rounded-full border-2 border-[#7D1FA6]"
+            className="w-9 h-9 object-cover rounded-full border-2 border-[#7D1FA6] shadow-sm hover:shadow-md transition-all duration-300 hover:scale-105"
           />
-          <span className="text-[#7D1FA6] font-anton text-xl tracking-tight">
+          <span className="text-[#7D1FA6] font-anton text-xl tracking-tight hover:scale-105 transition-transform">
             Passa a Bola
           </span>
         </Link>
 
-        {/* Menu desktop */}
+        {/* 💻 Menu desktop */}
         <div className="hidden md:flex ml-auto gap-5">
           <MenuLinks />
         </div>
 
-        {/* Botão mobile */}
+        {/* 📱 Botão mobile */}
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="md:hidden text-[#7D1FA6] hover:text-[#9124BF] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] ml-2"
+          className="md:hidden text-[#7D1FA6] hover:text-[#9124BF] transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#7D1FA6] ml-2"
           aria-label={isOpen ? "Fechar menu" : "Abrir menu"}
           aria-expanded={isOpen}
           aria-controls="mobile-menu"
@@ -205,9 +207,12 @@ export default function NavBar() {
         </button>
       </div>
 
-      {/* Menu mobile */}
+      {/* 📱 Menu mobile */}
       {isOpen && (
-        <div id="mobile-menu" className="md:hidden mt-2 px-4 pb-3">
+        <div
+          id="mobile-menu"
+          className="md:hidden mt-2 px-4 pb-3 bg-white/95 backdrop-blur-md border-t border-purple-100 shadow-inner rounded-b-lg"
+        >
           <MenuLinks vertical />
         </div>
       )}
