@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useAuth } from "../components/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { postsService } from "../services/posts";
 import {
   ShieldCheck,
   User,
@@ -12,6 +12,7 @@ import {
   FileDown,
   Edit,
   Trash2,
+  Plus,
 } from "lucide-react";
 
 export default function PerfilADM() {
@@ -24,70 +25,115 @@ export default function PerfilADM() {
   const [posts, setPosts] = useState([]);
   const [newPostTitle, setNewPostTitle] = useState("");
   const [newPostContent, setNewPostContent] = useState("");
-
-  // Headers com token JWT
-  const axiosConfig = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (isAdmin) fetchPosts();
+    if (isAdmin) {
+      fetchPosts();
+    }
   }, [isAdmin]);
 
   const fetchPosts = async () => {
     try {
-      const res = await axios.get("/api/posts");
-      const data = res.data.posts || res.data;
-      setPosts(Array.isArray(data) ? data : []);
+      setLoading(true);
+      const response = await postsService.getAll();
+      const postsData = response.posts || [];
+      setPosts(Array.isArray(postsData) ? postsData : []);
+      setError("");
     } catch (err) {
       console.error("Erro ao buscar postagens:", err);
+      setError("Erro ao carregar postagens");
       setPosts([]);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleCreate = async () => {
-    if (!newPostTitle || !newPostContent) return alert("Preencha todos os campos");
+    if (!newPostTitle.trim() || !newPostContent.trim()) {
+      return alert("Preencha todos os campos");
+    }
+
     try {
-      const res = await axios.post(
-        "/api/posts",
-        { title: newPostTitle, content: newPostContent },
-        axiosConfig
-      );
-      setPosts((prev) => [res.data, ...prev]);
-      setNewPostTitle("");
-      setNewPostContent("");
+      setLoading(true);
+      const response = await postsService.create({
+        title: newPostTitle,
+        content: newPostContent,
+      });
+      
+      if (response.post) {
+        setPosts((prev) => [response.post, ...prev]);
+        setNewPostTitle("");
+        setNewPostContent("");
+        setError("");
+        alert("Postagem criada com sucesso!");
+      }
     } catch (err) {
       console.error("Erro ao criar postagem:", err);
-      alert(err.response?.data?.error || "Erro ao criar postagem");
+      const errorMessage = err.response?.data?.error || "Erro ao criar postagem";
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleEdit = async (id) => {
-    const updatedTitle = prompt("Novo título:");
-    const updatedContent = prompt("Novo conteúdo:");
-    if (!updatedTitle || !updatedContent) return;
+    const postToEdit = posts.find((p) => p.id === id);
+    if (!postToEdit) return;
+
+    const updatedTitle = prompt("Novo título:", postToEdit.title);
+    if (!updatedTitle?.trim()) return;
+
+    const updatedContent = prompt("Novo conteúdo:", postToEdit.content);
+    if (!updatedContent?.trim()) return;
 
     try {
-      const res = await axios.put(
-        `/api/posts/${id}`,
-        { title: updatedTitle, content: updatedContent },
-        axiosConfig
-      );
-      setPosts((prev) => prev.map((p) => (p.id === id ? res.data : p)));
+      setLoading(true);
+      const response = await postsService.update(id, {
+        title: updatedTitle,
+        content: updatedContent,
+      });
+      
+      if (response.post) {
+        setPosts((prev) =>
+          prev.map((p) => (p.id === id ? response.post : p))
+        );
+        setError("");
+        alert("Postagem atualizada com sucesso!");
+      }
     } catch (err) {
       console.error("Erro ao atualizar postagem:", err);
-      alert(err.response?.data?.error || "Erro ao atualizar postagem");
+      const errorMessage = err.response?.data?.error || "Erro ao atualizar postagem";
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Tem certeza que deseja excluir esta postagem?")) return;
+    const postToDelete = posts.find((p) => p.id === id);
+    if (!postToDelete) return;
+
+    if (!window.confirm(`Tem certeza que deseja excluir a postagem "${postToDelete.title}"?`)) {
+      return;
+    }
+
     try {
-      await axios.delete(`/api/posts/${id}`, axiosConfig);
+      setLoading(true);
+      await postsService.delete(id);
       setPosts((prev) => prev.filter((p) => p.id !== id));
+      setError("");
+      alert("Postagem excluída com sucesso!");
     } catch (err) {
       console.error("Erro ao excluir postagem:", err);
-      alert(err.response?.data?.error || "Erro ao excluir postagem");
+      const errorMessage = err.response?.data?.error || "Erro ao excluir postagem";
+      setError(errorMessage);
+      alert(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -150,17 +196,17 @@ export default function PerfilADM() {
             </p>
             <div className="flex gap-4 mt-6">
               <button
-                onClick={() => (window.location.href = "/admin/eventos/novo")}
+                onClick={() => navigate("/admin/eventos/novo")}
                 className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-violet-700 transition"
               >
                 Novo evento
               </button>
-              <a
-                href="/eventos/novo?template=rapido"
+              <button
+                onClick={() => navigate("/eventos/novo?template=rapido")}
                 className="rounded-xl border border-violet-600 px-5 py-2.5 text-sm font-bold text-violet-700 hover:bg-violet-50 transition"
               >
                 Modelo rápido
-              </a>
+              </button>
             </div>
           </div>
 
@@ -174,35 +220,17 @@ export default function PerfilADM() {
             </p>
             <div className="flex gap-4 mt-6">
               <button
-                onClick={() => (window.location.href = "/admin/eventos")}
+                onClick={() => navigate("/admin/eventos")}
                 className="rounded-xl bg-violet-600 px-5 py-2.5 text-sm font-bold text-white hover:bg-violet-700 transition"
               >
                 Abrir lista
               </button>
               <button
-                onClick={() =>
-                  alert("Exportar CSV – integração com /api/eventos/export")
-                }
+                onClick={() => alert("Exportar CSV – integração com /api/eventos/export")}
                 className="rounded-xl border border-violet-600 px-5 py-2.5 text-sm font-bold text-violet-700 hover:bg-violet-50 transition flex items-center gap-2"
               >
                 <FileDown className="w-4 h-4" /> Exportar CSV
               </button>
-            </div>
-
-            {/* Métricas */}
-            <div className="grid grid-cols-3 gap-5 mt-8">
-              <div className="rounded-2xl bg-green-600 text-white p-5 text-center shadow-md">
-                <div className="text-2xl font-extrabold">10</div>
-                <div className="text-sm font-medium opacity-90">Eventos</div>
-              </div>
-              <div className="rounded-2xl bg-blue-600 text-white p-5 text-center shadow-md">
-                <div className="text-2xl font-extrabold">86</div>
-                <div className="text-sm font-medium opacity-90">Presenças</div>
-              </div>
-              <div className="rounded-2xl bg-rose-500 text-white p-5 text-center shadow-md">
-                <div className="text-2xl font-extrabold">23</div>
-                <div className="text-sm font-medium opacity-90">Ausências</div>
-              </div>
             </div>
           </div>
         </section>
@@ -210,65 +238,98 @@ export default function PerfilADM() {
         {/* Postagens */}
         {isAdmin && (
           <section className="bg-white rounded-2xl shadow-md border border-slate-100 p-8">
-            <h2 className="text-xl font-bold mb-5 text-violet-700">Gerenciar Postagens</h2>
+            <h2 className="text-xl font-bold mb-5 text-violet-700 flex items-center gap-2">
+              <ClipboardList className="w-5 h-5" /> Gerenciar Postagens
+            </h2>
 
-            <div className="mb-6 flex flex-col gap-4">
-              <input
-                type="text"
-                placeholder="Título"
-                value={newPostTitle}
-                onChange={(e) => setNewPostTitle(e.target.value)}
-                className="border rounded-lg p-2"
-              />
-              <textarea
-                placeholder="Conteúdo"
-                value={newPostContent}
-                onChange={(e) => setNewPostContent(e.target.value)}
-                className="border rounded-lg p-2"
-              />
-              <button
-                onClick={handleCreate}
-                className="bg-violet-600 text-white px-4 py-2 rounded-lg hover:bg-violet-700 transition"
-              >
-                Criar Postagem
-              </button>
-               <button
-    onClick={() => navigate("/ranking")}
-    className="bg-yellow-500 text-white px-4 py-2 rounded-lg hover:bg-yellow-600 transition"
-  >
-    Ver Ranking de Jogadoras 🏆
-  </button>
-            </div>
-
-            {posts.length === 0 ? (
-              <p className="text-gray-600">Nenhuma postagem criada ainda.</p>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                {posts.map((post) => (
-                  <div
-                    key={post.id}
-                    className="bg-gray-50 border rounded-2xl p-4 shadow hover:shadow-lg transition"
-                  >
-                    <h3 className="font-bold text-lg mb-2">{post.title}</h3>
-                    <p className="text-gray-700">{post.content}</p>
-                    <div className="flex gap-2 mt-4">
-                      <button
-                        onClick={() => handleEdit(post.id)}
-                        className="px-3 py-1 rounded bg-blue-600 text-white hover:bg-blue-700 flex items-center gap-1"
-                      >
-                        <Edit className="w-4 h-4" /> Editar
-                      </button>
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="px-3 py-1 rounded bg-red-600 text-white hover:bg-red-700 flex items-center gap-1"
-                      >
-                        <Trash2 className="w-4 h-4" /> Excluir
-                      </button>
-                    </div>
-                  </div>
-                ))}
+            {error && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {error}
               </div>
             )}
+
+            {/* Formulário de criação */}
+            <div className="mb-8 p-6 bg-gray-50 rounded-2xl border border-gray-200">
+              <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-violet-700">
+                <Plus className="w-5 h-5" /> Nova Postagem
+              </h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  placeholder="Título da postagem"
+                  value={newPostTitle}
+                  onChange={(e) => setNewPostTitle(e.target.value)}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                />
+                <textarea
+                  placeholder="Conteúdo da postagem"
+                  value={newPostContent}
+                  onChange={(e) => setNewPostContent(e.target.value)}
+                  rows={4}
+                  className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                />
+                <button
+                  onClick={handleCreate}
+                  disabled={loading || !newPostTitle.trim() || !newPostContent.trim()}
+                  className="rounded-xl bg-violet-600 text-white px-6 py-3 font-bold hover:bg-violet-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  {loading ? "Criando..." : "Criar Postagem"}
+                </button>
+              </div>
+            </div>
+
+            {/* Lista de postagens */}
+            <div className="mb-6">
+              <h3 className="text-lg font-bold mb-4">Postagens Existentes</h3>
+              
+              {loading && posts.length === 0 ? (
+                <p className="text-gray-600">Carregando postagens...</p>
+              ) : posts.length === 0 ? (
+                <p className="text-gray-600">Nenhuma postagem criada ainda.</p>
+              ) : (
+                <div className="grid md:grid-cols-2 gap-6">
+                  {posts.map((post) => (
+                    <div
+                      key={post.id}
+                      className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-shadow"
+                    >
+                      <h3 className="font-bold text-lg mb-2 text-gray-900">{post.title}</h3>
+                      <p className="text-gray-700 mb-4 whitespace-pre-wrap">{post.content}</p>
+                      <div className="flex justify-between items-center text-sm text-gray-500">
+                        <span>Por: {post.author}</span>
+                        <span>{new Date(post.createdAt).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex gap-2 mt-4">
+                        <button
+                          onClick={() => handleEdit(post.id)}
+                          disabled={loading}
+                          className="px-4 py-2 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition disabled:opacity-50 flex items-center gap-2"
+                        >
+                          <Edit className="w-4 h-4" /> Editar
+                        </button>
+                        <button
+                          onClick={() => handleDelete(post.id)}
+                          disabled={loading}
+                          className="px-4 py-2 rounded-xl bg-red-600 text-white hover:bg-red-700 transition disabled:opacity-50 flex items-center gap-2"
+                        >
+                          <Trash2 className="w-4 h-4" /> Excluir
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Botão Ranking */}
+            <div className="flex justify-center">
+              <button
+                onClick={() => navigate("/ranking")}
+                className="rounded-xl bg-yellow-500 text-white px-6 py-3 font-bold hover:bg-yellow-600 transition flex items-center gap-2"
+              >
+                🏆 Ver Ranking de Jogadoras
+              </button>
+            </div>
           </section>
         )}
       </main>

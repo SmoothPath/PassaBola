@@ -1,93 +1,135 @@
 // backend/routes/posts.js
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const { authenticateToken, users } = require('./auth'); // Importa autenticação do auth.js
+const express = require("express");
+const fs = require("fs");
+const path = require("path");
+
+// Usa a mesma autenticação dos eventos
+let authenticateToken;
+try {
+  ({ authenticateToken } = require("./auth"));
+} catch {
+  authenticateToken = (req, _res, next) => {
+    req.user = req.user || {
+      email: "user@example.com",
+      name: "Usuário Demo",
+      role: "user",
+    };
+    next();
+  };
+}
 
 const router = express.Router();
-const POSTS_FILE = path.join(__dirname, '../data/posts.json');
+const POSTS_FILE = path.join(__dirname, "../data/posts.json");
 
-// Middleware para verificar se usuário é admin
-const isAdmin = (req, res, next) => {
-  if (!req.user) return res.status(401).json({ error: 'Não autorizado' });
-  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso negado: Admins apenas' });
-  next();
-};
+/** Apenas admin */
+function requireAdmin(req, res, next) {
+  if (req.user?.role === "admin") return next();
+  return res.status(403).json({ error: "Acesso restrito a administradores" });
+}
 
-// Função para ler posts do arquivo
+/** Helpers: ler/salvar arquivo */
 function readPosts() {
   try {
-    const data = fs.readFileSync(POSTS_FILE, 'utf-8');
+    const data = fs.readFileSync(POSTS_FILE, "utf-8");
     return JSON.parse(data);
-  } catch (error) {
+  } catch {
     return [];
   }
 }
 
-// Função para salvar posts no arquivo
 function savePosts(posts) {
+  // Garante que o diretório existe
+  const dir = path.dirname(POSTS_FILE);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
   fs.writeFileSync(POSTS_FILE, JSON.stringify(posts, null, 2));
 }
 
-// Listar posts (público)
-router.get('/', (req, res) => {
+function getPost(id) {
   const posts = readPosts();
-  res.json(posts);
+  return posts.find((p) => p.id === Number(id)) || null;
+}
+
+/** -------------------- ROTAS -------------------- **/
+
+/** LISTAR (público) */
+router.get("/", (_req, res) => {
+  const posts = readPosts();
+  res.json({ ok: true, posts });
 });
 
-// Criar post (admin)
-router.post('/', authenticateToken, isAdmin, (req, res) => {
-  const { title, content } = req.body;
-  if (!title || !content) return res.status(400).json({ error: 'Campos obrigatórios' });
+/** CRIAR (admin) */
+router.post("/", authenticateToken, requireAdmin, (req, res) => {
+  const { title, content } = req.body || {};
+  
+  if (!title) {
+    return res.status(400).json({ error: "Título é obrigatório" });
+  }
 
   const posts = readPosts();
 
-  const newPost = {
-    id: Date.now().toString(),
+  const novoPost = {
+    id: Date.now(),
     title,
-    content,
+    content: content || "",
+    author: req.user.name || req.user.email || "Administrador",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };
 
-  posts.unshift(newPost);
+  posts.unshift(novoPost);
   savePosts(posts);
 
-  res.status(201).json(newPost);
+  res.status(201).json({ ok: true, post: novoPost });
 });
 
-// Editar post (admin)
-router.put('/:id', authenticateToken, isAdmin, (req, res) => {
-  const { id } = req.params;
-  const { title, content } = req.body;
+/** LER UM POST (público) */
+router.get("/:id", (req, res) => {
+  const post = getPost(req.params.id);
+  if (!post) return res.status(404).json({ error: "Post não encontrado" });
+  res.json({ ok: true, post });
+});
+
+/** ATUALIZAR (admin) */
+router.put("/:id", authenticateToken, requireAdmin, (req, res) => {
+  const { title, content } = req.body || {};
+  
+  if (!title) {
+    return res.status(400).json({ error: "Título é obrigatório" });
+  }
 
   const posts = readPosts();
-  const postIndex = posts.findIndex((p) => p.id === id);
-  if (postIndex === -1) return res.status(404).json({ error: 'Post não encontrado' });
+  const postIndex = posts.findIndex((p) => p.id === Number(req.params.id));
+  
+  if (postIndex === -1) {
+    return res.status(404).json({ error: "Post não encontrado" });
+  }
 
   posts[postIndex] = {
     ...posts[postIndex],
     title,
-    content,
+    content: content || "",
     updatedAt: new Date().toISOString(),
   };
 
   savePosts(posts);
-  res.json(posts[postIndex]);
+  res.json({ ok: true, post: posts[postIndex] });
 });
 
-// Deletar post (admin)
-router.delete('/:id', authenticateToken, isAdmin, (req, res) => {
-  const { id } = req.params;
-
-  let posts = readPosts();
-  const postIndex = posts.findIndex((p) => p.id === id);
-  if (postIndex === -1) return res.status(404).json({ error: 'Post não encontrado' });
+/** REMOVER (admin) */
+router.delete("/:id", authenticateToken, requireAdmin, (req, res) => {
+  const posts = readPosts();
+  const postIndex = posts.findIndex((p) => p.id === Number(req.params.id));
+  
+  if (postIndex === -1) {
+    return res.status(404).json({ error: "Post não encontrado" });
+  }
 
   posts.splice(postIndex, 1);
   savePosts(posts);
 
-  res.json({ message: 'Post deletado com sucesso' });
+  res.json({ ok: true });
 });
 
 module.exports = { router };

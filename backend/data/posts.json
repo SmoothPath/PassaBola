@@ -1,1 +1,26 @@
-[]
+[
+  {
+    "id": 1762367988702,
+    "title": "teste numero 2",
+    "content": "mais uma postagem!",
+    "author": "admin@passabola.app",
+    "createdAt": "2025-11-05T18:39:48.702Z",
+    "updatedAt": "2025-11-05T18:40:09.768Z"
+  },
+  {
+    "id": 1762367542923,
+    "title": "postagem ",
+    "content": "posts funcionando!",
+    "author": "admin@passabola.app",
+    "createdAt": "2025-11-05T18:32:22.923Z",
+    "updatedAt": "2025-11-05T18:32:37.122Z"
+  },
+  {
+    "id": 1762367341243,
+    "title": "teste",
+    "content": "agora deu certo!",
+    "author": "admin@passabola.app",
+    "createdAt": "2025-11-05T18:29:01.243Z",
+    "updatedAt": "2025-11-05T18:32:47.815Z"
+  }
+]
