@@ -23,13 +23,14 @@ const NewspaperIcon = () => (
 const Noticias = () => {
   const [noticias, setNoticias] = useState([]);
   const [erro, setErro] = useState(false);
+  const [carregando, setCarregando] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await getSportsNews();
 
-        // ✅ Filtrar apenas notícias relacionadas ao futebol feminino
+        // Filtrar apenas notícias relacionadas ao futebol feminino
         const filtradas = data.filter((noticia) => {
           const titulo = noticia.title?.toLowerCase() || "";
           const descricao = noticia.description?.toLowerCase() || "";
@@ -43,10 +44,13 @@ const Noticias = () => {
           );
         });
 
-        if (filtradas.length === 0) setErro(true);
         setNoticias(filtradas);
+        setErro(filtradas.length === 0);
       } catch (error) {
+        console.error("Erro ao buscar notícias:", error);
         setErro(true);
+      } finally {
+        setCarregando(false);
       }
     };
 
@@ -65,14 +69,13 @@ const Noticias = () => {
   return (
     <section className="bg-white py-12 px-6 sm:px-12" id="noticias">
       <div className="max-w-6xl mx-auto">
-        {/* Título com ícone e estilo */}
+        {/* Título com ícone */}
         <div className="flex items-center gap-3 mb-8">
           <NewspaperIcon />
           <h2
             className="text-3xl font-extrabold bg-clip-text text-transparent"
             style={{
-              backgroundImage:
-                "linear-gradient(90deg, #7D1FA6, #B97FC9, #7D1FA6)",
+              backgroundImage: "linear-gradient(90deg, #7D1FA6, #B97FC9, #7D1FA6)",
               fontFamily: "'Poppins', sans-serif",
             }}
           >
@@ -81,12 +84,15 @@ const Noticias = () => {
         </div>
         <div className="w-16 h-1 mb-3 rounded-full bg-gradient-to-r from-[#7D1FA6] via-[#B97FC9] to-[#7D1FA6]" />
 
+        {/* Mensagens de erro ou carregamento */}
         {erro ? (
           <p className="text-red-500 font-medium">
             Não foi possível carregar notícias de futebol feminino. Tente novamente mais tarde.
           </p>
+        ) : carregando ? (
+          <p className="text-gray-600 font-medium">Carregando notícias...</p>
         ) : noticias.length === 0 ? (
-          <p>Carregando notícias...</p>
+          <p className="text-gray-600 font-medium">Nenhuma notícia encontrada.</p>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {noticias.slice(0, 6).map((noticia, index) => (
@@ -94,12 +100,16 @@ const Noticias = () => {
                 key={index}
                 className="border border-gray-200 p-4 rounded-lg shadow hover:shadow-md transition bg-white"
               >
-                {noticia.urlToImage && (
+                {noticia.urlToImage ? (
                   <img
                     src={noticia.urlToImage}
-                    alt={noticia.title}
+                    alt={`Imagem da notícia: ${noticia.title}`}
                     className="w-full h-40 object-cover rounded-md mb-4"
                   />
+                ) : (
+                  <div className="w-full h-40 bg-gray-100 flex items-center justify-center rounded-md mb-4 text-gray-400 text-sm">
+                    Sem imagem disponível
+                  </div>
                 )}
 
                 <a
