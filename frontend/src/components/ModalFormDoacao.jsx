@@ -1,27 +1,47 @@
 // src/components/ModalFormDoacao.jsx
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 
 export default function ModalFormDoacao({ isOpen, onClose, onSuccess }) {
-  const [nome, setNome]       = useState('');
-  const [email, setEmail]     = useState('');
-  const [valor, setValor]     = useState('');
+  const [nome, setNome] = useState('');
+  const [email, setEmail] = useState('');
+  const [valor, setValor] = useState('');
   const [mensagem, setMensagem] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [formError, setFormError] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setSubmitting(true);
+    setFormError('');
 
+    if (!nome.trim() || !email.trim()) {
+      setFormError('Nome e email são obrigatórios.');
+      return;
+    }
+
+    const valorNum = valor === '' ? 0 : Number(valor);
+    if (valor !== '' && (isNaN(valorNum) || valorNum < 0)) {
+      setFormError('Valor inválido.');
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      await axios.post('/api/doacoes', { nome, email, valor: +valor, mensagem });
-      onSuccess();    // avisa ao pai que hook de refresh deve rodar
-      onClose();      // fecha o modal
-      // limpa campos
+      // usa a instância api que tem a baseURL do backend
+      await api.post('/doacoes', {
+        nome: nome.trim(),
+        email: email.trim(),
+        valor: valorNum,
+        mensagem: mensagem.trim(),
+      });
+
       setNome(''); setEmail(''); setValor(''); setMensagem('');
+      if (typeof onSuccess === 'function') onSuccess();
+      onClose();
     } catch (err) {
-      console.error(err);
-      alert('Não foi possível realizar a doação.');
+      console.error('Erro ao enviar doação:', err);
+      const msg = err?.response?.data?.erro || err?.response?.data?.message || 'Não foi possível realizar a doação.';
+      setFormError(msg);
     } finally {
       setSubmitting(false);
     }
@@ -46,14 +66,15 @@ export default function ModalFormDoacao({ isOpen, onClose, onSuccess }) {
           />
           <input
             type="number" placeholder="Valor (R$)"
-            min="1" value={valor} onChange={e => setValor(e.target.value)}
-            required className="w-full border px-4 py-2 rounded"
+            min="0" value={valor} onChange={e => setValor(e.target.value)}
+            className="w-full border px-4 py-2 rounded"
           />
           <textarea
             placeholder="Mensagem (opcional)"
             value={mensagem} onChange={e => setMensagem(e.target.value)}
             className="w-full border px-4 py-2 rounded"
           />
+          {formError && <p className="text-sm text-red-600">{formError}</p>}
           <button
             type="submit"
             disabled={submitting}

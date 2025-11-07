@@ -23,12 +23,38 @@ export default function GraficoDoacoes({ refreshTrigger }) {
     axios.get('/api/doacoes/por-mes')
       .then(res => {
         const raw = res.data;
-        const arr = Array.isArray(raw) ? raw : raw.doacoes || raw.data || [];
-        // Preenche meses sem doação com zero
-        const mapeado = MESES_PADRAO.map((mes) => {
-          const found = arr.find(d => d.mes === mes);
-          return { mes, quantidade: found ? found.quantidade : 0 };
+
+        // raw pode ser:
+        // - [{ mes: 1, quantidade: X }, ...]
+        // - [{ mes: "Jan", quantidade: X }, ...]
+        // - array com 12 itens [{ mes: 1..12, quantidade }]
+        const arr = Array.isArray(raw) ? raw : (raw && (raw.doacoes || raw.data || raw.result)) || [];
+
+        // transforma em mapa para fácil lookup
+        const mapa = new Map();
+
+        arr.forEach(item => {
+          if (!item) return;
+          // se mes é numérico
+          if (typeof item.mes === 'number') {
+            const idx = item.mes - 1; // 0..11
+            if (idx >= 0 && idx < 12) mapa.set(MESES_PADRAO[idx], Number(item.quantidade || 0));
+            return;
+          }
+          // se mes é string tipo "Jan" ou "Janeiro" -> normaliza para 3 letras
+          const mesStr = String(item.mes || '').slice(0,3);
+          const match = MESES_PADRAO.find(m => m.toLowerCase() === mesStr.toLowerCase());
+          if (match) {
+            mapa.set(match, Number(item.quantidade || 0));
+          }
         });
+
+        // monta array final sempre com 12 elementos
+        const mapeado = MESES_PADRAO.map(mes => ({
+          mes,
+          quantidade: mapa.has(mes) ? mapa.get(mes) : 0
+        }));
+
         setDados(mapeado);
       })
       .catch(err => {
