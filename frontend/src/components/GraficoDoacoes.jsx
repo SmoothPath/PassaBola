@@ -21,7 +21,7 @@ export default function GraficoDoacoes({ refreshTrigger }) {
     setLoading(true);
     setError(null);
 
-    api.get('/api/doacoes/por-mes')
+    api.get('/doacoes/por-mes')
       .then(res => {
         const raw = res.data;
 
