@@ -28,7 +28,7 @@ export default function ModalFormDoacao({ isOpen, onClose, onSuccess }) {
     setSubmitting(true);
     try {
       // usa a instância api que tem a baseURL do backend
-      await api.post('/doacoes', {
+      await api.post('api/doacoes', {
         nome: nome.trim(),
         email: email.trim(),
         valor: valorNum,

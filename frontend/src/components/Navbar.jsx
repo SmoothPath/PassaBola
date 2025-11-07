@@ -86,7 +86,7 @@ export default function NavBar() {
       />
 
       <NavLink
-        to="/doacao"
+        to="/doacoes"
         onClick={closeMenu}
         className={({ isActive }) =>
           `${linkBase} ${isActive ? linkActive : linkInactive}`

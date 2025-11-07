@@ -1,6 +1,7 @@
 // src/components/GraficoDoacoes.jsx
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../services/api';
+
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -20,7 +21,7 @@ export default function GraficoDoacoes({ refreshTrigger }) {
     setLoading(true);
     setError(null);
 
-    axios.get('/api/doacoes/por-mes')
+    api.get('/api/doacoes/por-mes')
       .then(res => {
         const raw = res.data;
 

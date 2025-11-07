@@ -69,7 +69,7 @@ export default function App() {
             <Route path="/eventos" element={<ExplorarEventos />} />
             <Route path="/jogajunto" element={<JogaJunto />} />
             <Route path="/voluntarios" element={<Voluntarios />} />
-            <Route path="/doacao" element={<Doacao />} />
+            <Route path="/doacoes" element={<Doacao />} />
             <Route path="/login" element={<Login />} />
             <Route path="/camisa10" element={<Camisa10 />} />
             <Route path="/carrinho" element={<CartPage />} />

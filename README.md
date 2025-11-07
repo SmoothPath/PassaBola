@@ -49,6 +49,9 @@ O projeto une tecnologia web moderna, integração com sistemas IoT (Cinta Monit
 - Seção de Parceiros
 - Interface responsiva e acessível, feita com Tailwind CSS  
 
+**Gráfico da quantidade de Doações do Mês**
+![Imagem do gráfico de doações](frontend/public/graficoDoacao.png)
+
 ---
 
 ## Integração IoT – Cinta Monitora “Passa a Bola”
@@ -69,8 +72,8 @@ Ela coleta dados fisiológicos em tempo real e envia para o FIWARE, integrando-s
 - Armazenamento e exibição histórica dos dados no painel da plataforma  
 
 **Exemplo de Gráficos de Monitoramento IoT**  
-![Adicionar imagem do gráfico de batimentos](frontend/public/graficoBatCar.png)  
-![Adicionar imagem do gráfico de temperatura](frontend/public/graficoTemp.png)  
+![Imagem do gráfico de batimentos](frontend/public/graficoBatCar.png)  
+![Imagem do gráfico de temperatura](frontend/public/graficoTemp.png)  
 
 ---
 
