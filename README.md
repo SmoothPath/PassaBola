@@ -2,136 +2,141 @@
 
 ## Visão Geral
 
-O **Passa a Bola** é uma plataforma web que conecta organizadores de eventos esportivos e voluntários, permitindo cadastro de eventos, inscrições, gerenciamento de participantes e recursos extras como mapa de localização, carrinho de doações e painel administrativo. A plataforma visa facilitar a organização de eventos e melhorar a experiência do usuário, com foco em esportes e ações comunitárias.
+O Passa a Bola é uma plataforma web completa desenvolvida pela equipe SmoothPath, que conecta organizadoras de eventos esportivos, jogadoras, fãs e voluntárias.  
+A aplicação permite cadastro, inscrição e gerenciamento de eventos esportivos comunitários, além de oferecer ranking de jogadoras, painel administrativo, notícias e placares atualizados do futebol feminino.
+
+O projeto une tecnologia web moderna, integração com sistemas IoT (Cinta Monitora) e processamento de dados em Python, formando um ecossistema inteligente que promove organização, engajamento e segurança esportiva.
 
 ---
 
-## 📋 Equipe SmoothPath
-- Geovana Maria da Silva Cardoso - 566254
-- Gabriel dos Santos Cardoso - 561203
-- Gustavo Torres Caldeira - 561613
-- Lucas Oliveira Santos - 563617
-- Mariana Silva do Egito Moreira - 562544
-- 1ESPF - Engenharia de Software
+## Equipe SmoothPath
+- Geovana Maria da Silva Cardoso - 566254  
+- Gabriel dos Santos Cardoso - 561203  
+- Gustavo Torres Caldeira - 561613  
+- Lucas Oliveira Santos - 563617  
+- Mariana Silva do Egito Moreira - 562544  
+- 1ESPF - Engenharia de Software  
 
---- 
+---
 
 ## Funcionalidades Principais
 
-### Para Usuários
+### Usuárias (Jogadoras)
+- Cadastro e login seguro com autenticação JWT  
+- Edição de perfil e acompanhamento de pontuação  
+- Inscrição e cancelamento em eventos  
+- Acesso ao ranking de jogadoras  
+- Visualização de notícias e placares atualizados do futebol feminino  
 
-* Cadastro e login seguro com autenticação JWT.
-* Atualização de perfil e acompanhamento de pontos de participação.
-* Exploração de eventos ativos e inscrição rápida.
-* Cancelamento de inscrições em eventos.
-* Visualização de eventos já inscritos.
+### Administradoras
+- Painel administrativo completo  
+- CRUD de eventos e postagens (criação, edição, exclusão e listagem)  
+- Postagens aparecem automaticamente na Home  
+- Gerenciamento de inscrições e status de eventos  
+- Exportação de relatórios de participantes  
 
-### Para Administradores
+### Home da Plataforma
+- Exibição dinâmica de postagens das administradoras  
+- Seção com notícias e placares ao vivo do futebol feminino  
 
-* Painel administrativo completo.
-* Criação, edição e remoção de eventos.
-* Gerenciamento de inscritos (adicionar/remover).
-* Exportação de relatórios (CSV) de eventos e participantes.
-* Controle de status dos eventos (ativo, inativo, encerrado).
+---
 
-### Recursos Extras
+## Recursos Extras
+- Mapa interativo (Leaflet)  
+- Carrinho de produtos personalizados
+- Seção de Doações para voluntários
+- Sistema de pontuação e engajamento
+- Seção de Parceiros
+- Interface responsiva e acessível, feita com Tailwind CSS  
 
-* Mapa interativo para localizar eventos (Google Maps / Leaflet / OpenStreetMap).
-* Carrinho de doações e produtos relacionados a eventos.
-* Sistema de pontuação para participantes.
+---
+
+## Integração IoT – Cinta Monitora “Passa a Bola”
+
+A Cinta Monitora IoT é um dispositivo vestível criado para monitorar a saúde das atletas durante treinos e jogos.  
+Ela coleta dados fisiológicos em tempo real e envia para o FIWARE, integrando-se com a plataforma web.
+
+### Componentes e Tecnologias
+- ESP32, DHT22 (temperatura corporal) e potenciômetro (simulação de batimentos)  
+- Buzzer para alertas locais  
+- Comunicação via MQTT com o FIWARE Orion Context Broker  
+- Mosquitto, IoT Agent MQTT, STH-Comet e MongoDB para armazenamento e histórico  
+
+### Funcionalidades IoT
+- Coleta contínua de batimentos, temperatura e calorias  
+- Envio de dados em tempo real ao FIWARE  
+- Alertas sonoros e visuais em situações críticas  
+- Armazenamento e exibição histórica dos dados no painel da plataforma  
+
+**Exemplo de Gráficos de Monitoramento IoT**  
+![Adicionar imagem do gráfico de batimentos](frontend/public/graficoBatCar.png)  
+![Adicionar imagem do gráfico de temperatura](frontend/public/graficoTemp.png)  
+
+---
+
+## Módulo Python – Cálculo de Ranking
+
+O sistema de ranking é desenvolvido em Python, responsável por processar as informações de participação, engajamento e pontuação das jogadoras.
+
+### Funcionamento
+1. O script Python coleta os dados de pontuação e engajamento.  
+2. Calcula o ranking geral e individual das jogadoras.  
+3. Gera um arquivo JSON com os resultados atualizados.  
+4. O Node.js consome esse arquivo e envia os dados ao frontend React, que exibe o ranking no site.
+
+**Exemplo do Ranking (Python)**  
+![Adicionar imagem do gráfico do ranking](frontend/public/pyRanking.png)  
 
 ---
 
 ## Tecnologias Utilizadas
 
 ### Backend
-
-* Node.js
-* Express.js
-* JWT para autenticação
-* Bcrypt.js para criptografia de senhas
-* CORS e JSON como middlewares
-* Banco de dados em memória (simulação) — pode ser adaptado para MongoDB, PostgreSQL ou outro
+- Node.js + Express.js  
+- JWT e Bcrypt.js  
+- Integração com Python via JSON  
+- Conexão com FIWARE e MQTT  
 
 ### Frontend
+- React.js + Vite  
+- Tailwind CSS  
+- Context API + Axios  
 
-* React.js com React Router
-* Tailwind CSS para estilização
-* Context API para gerenciamento de estado (usuário e carrinho)
-* Axios para comunicação com a API
+### IoT e FIWARE
+- ESP32, DHT22, Buzzer  
+- MQTT, Mosquitto, IoT Agent MQTT  
+- FIWARE Orion, STH-Comet, MongoDB  
 
-### Integrações
-
-* Mapas interativos com Leaflet / Google Maps
-
-
+### Python
+- Processamento de ranking  
+- Geração de JSONs para integração com Node.js  
+- Biblioteca Pandas para manipulação de dados  
 ---
 
-## Estrutura do Projeto
+## Execução do Sistema
 
-```
-passa-a-bola/
-│
-├─ backend/
-│   ├─ server.js
-│   ├─ routes/
-│   │   ├─ auth.js
-│   │   └─ eventos.js
-│   └─ models/ (opcional para banco real)
-│
-├─ frontend/
-│   ├─ src/
-│   │   ├─ pages/           # Páginas React (PerfilADM, EventosNovo, etc)
-│   │   ├─ components/      # Componentes reutilizáveis (Navbar, Footer, Login)
-│   │   ├─ services/        # Comunicação com API
-│   │   └─ contexts/        # Contextos (AuthContext, CartContext)
-│   └─ index.html
-│
-├─ .env                     # Variáveis de ambiente
-├─ package.json
-└─ README.md
-```
-
----
-
-## Instalação e Execução
-
-### 1. Backend
-
+### Backend
 ```bash
 cd backend
 npm install
-node server.js   
+node server.js
 ```
 
-### 2. Frontend
-
+### Frontend
 ```bash
 cd frontend
 npm install
-npm install react-leaflet@4 leaflet
-npm install hugeicons-react
-npm run dev       # abre a aplicação no navegador
+npm run dev
 ```
+## Acesso ao Projeto
 
-### 3. Variáveis de ambiente
-
-* `VITE_API_URL` → URL do backend (ex: `http://localhost:5000/api`)
-
----
-
-## Acesso
-
-* **Usuário comum**: criar conta e participar de eventos.
-* **Administrador**: login com credenciais pré-definidas (`admin@passabola.app`) para acessar painel e gerenciar eventos.
+- GitHub: [https://github.com/SmoothPath/PassaBola.git](https://github.com/SmoothPath/PassaBola.git)  
+- Deploy (Vercel): [https://passa-bola-8d13.vercel.app/](https://passa-bola-8d13.vercel.app/)
 
 ---
 
-## Próximos Passos / Melhorias
+## Conclusão
 
-* Notificações push para eventos.
-* Sistema de gamificação e pontos detalhado.
-* Integração com API de pagamento/donativos.
-* Melhorias na interface e acessibilidade.
-
----
+O Passa a Bola é uma solução digital completa que integra web, IoT e análise de dados para promover o futebol feminino.  
+O sistema foi totalmente implementado, com destaque para o painel administrativo funcional, cálculo automatizado de ranking em Python e monitoramento em tempo real via IoT e FIWARE.  
+A plataforma está pronta para deployment e expansão futura, representando um marco de inovação no esporte comunitário.
